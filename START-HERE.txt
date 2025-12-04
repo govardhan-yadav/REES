@@ -1,0 +1,42 @@
+========================================
+      CHATBOT SETUP - FINAL STEPS
+========================================
+
+✅ Everything is configured and ready!
+
+TO START THE CHATBOT:
+--------------------
+
+1. Open Command Prompt (CMD)
+2. Type: cd "c:\CAPSTONE\Capstone PSCS-32\FINAL\PSCS 32"
+3. Type: npm start
+4. Wait for: "✅ Server running on http://localhost:3001"
+5. Open index.html in your browser
+6. Click the 💬 button and start chatting!
+
+OR SIMPLY:
+----------
+Double-click: start-server.bat
+
+WHAT'S BEEN FIXED:
+------------------
+✅ Gemini API integrated (using v1 endpoint)
+✅ Model: gemini-1.5-flash (free tier)
+✅ Server configured on port 3001
+✅ Chatbot button added to index.html
+✅ Error handling improved
+✅ All dependencies installed
+
+YOUR API KEY:
+-------------
+Location: .env file
+Key: AIzaSyD4H3JGR4Kkl20P6ONQNpMxXszgS173hSQ
+
+IF CHATBOT STILL SHOWS FALLBACK MESSAGE:
+-----------------------------------------
+Your API key might need to be regenerated.
+Get a new one from: https://makersuite.google.com/app/apikey
+
+Then replace it in the .env file.
+
+========================================

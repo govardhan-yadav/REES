@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard - REES</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px}
+        .container{max-width:1200px;margin:0 auto}
+        h1{color:#fff;text-align:center;margin-bottom:30px}
+        .card{background:#fff;padding:30px;border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,0.2);margin-bottom:20px}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:30px}
+        .stat-card{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:20px;border-radius:10px;text-align:center}
+        .stat-card h3{font-size:14px;margin-bottom:10px;opacity:0.9}
+        .stat-card p{font-size:32px;font-weight:bold}
+        .badges-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:15px}
+        .badge-card{background:#f9f9f9;padding:20px;border-radius:10px;text-align:center;transition:transform 0.2s}
+        .badge-card.earned{background:linear-gradient(135deg,#ffd700,#ffa500);color:#fff}
+        .badge-card.locked{opacity:0.4}
+        .badge-card:hover{transform:translateY(-5px)}
+        .badge-icon{font-size:48px;margin-bottom:10px}
+        .badge-label{font-weight:bold;margin-bottom:5px}
+        .badge-desc{font-size:12px;opacity:0.8}
+        .subject-list{list-style:none;padding:0}
+        .subject-list li{padding:10px;margin:5px 0;background:#f5f5f5;border-radius:5px;display:flex;justify-content:space-between}
+        .btn{display:inline-block;padding:12px 30px;background:#667eea;color:#fff;text-decoration:none;border-radius:5px;margin-top:20px}
+        .btn:hover{background:#5568d3}
+        .loading{text-align:center;padding:40px;color:#666}
+        .tool-card{transition:transform 0.2s}
+        .tool-card:hover{transform:translateY(-5px)}
+        .history-item{background:#f8f9fa;padding:15px;border-radius:8px;margin-bottom:15px;border-left:4px solid #667eea}
+        .history-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+        .history-title{font-weight:600;color:#2c3e50}
+        .history-score{font-size:20px;font-weight:700;color:#667eea}
+        .history-meta{font-size:13px;color:#7f8c8d;margin-bottom:10px}
+        .teacher-feedback{background:#e8f5e9;padding:12px;border-radius:5px;margin-top:10px;border-left:3px solid #27ae60}
+        .feedback-label{font-size:12px;color:#27ae60;font-weight:600;margin-bottom:5px}
+        .feedback-text{color:#2c3e50;font-size:14px;line-height:1.6}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 My Learning Dashboard</h1>
+        
+        <div id="loading" class="loading">Loading your progress...</div>
+        
+        <div id="dashboard" style="display:none">
+            <!-- Stats Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Quizzes</h3>
+                    <p id="totalQuizzes">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Average Score</h3>
+                    <p id="avgScore">0%</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Badges Earned</h3>
+                    <p id="badgeCount">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Weakest Subject</h3>
+                    <p id="weakSubject" style="font-size:18px">—</p>
+                </div>
+            </div>
+            
+            <!-- Badges Section -->
+            <div class="card">
+                <h2>🏆 Achievements & Badges</h2>
+                <p style="color:#666;margin-bottom:20px">Earn badges by completing quizzes and improving your scores!</p>
+                <div id="badgesGrid" class="badges-grid"></div>
+            </div>
+            
+            <!-- Subject Performance -->
+            <div class="card">
+                <h2>📚 Subject-wise Performance</h2>
+                <ul id="subjectList" class="subject-list"></ul>
+            </div>
+            
+            <!-- Last Attempt -->
+            <div class="card">
+                <h2>📝 Last Quiz Attempt</h2>
+                <div id="lastAttempt"></div>
+            </div>
+            
+            <!-- Quiz History with Teacher Feedback -->
+            <div class="card">
+                <h2>📋 Quiz History & Teacher Feedback</h2>
+                <div id="quizHistory"></div>
+            </div>
+            
+            <!-- Learning Tools -->
+            <div class="card">
+                <h2>🎓 Learning Tools</h2>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-top:20px">
+                    <a href="learning-path-api.html" style="text-decoration:none" class="tool-card">
+                        <div style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:20px;border-radius:10px;text-align:center">
+                            <div style="font-size:48px;margin-bottom:10px">🎯</div>
+                            <h3 style="margin-bottom:8px">Learning Path</h3>
+                            <p style="font-size:14px;opacity:0.9">Get personalized recommendations based on your performance</p>
+                        </div>
+                    </a>
+                    <a href="curriculum-navigator.html" style="text-decoration:none" class="tool-card">
+                        <div style="background:linear-gradient(135deg,#11998e,#38ef7d);color:#fff;padding:20px;border-radius:10px;text-align:center">
+                            <div style="font-size:48px;margin-bottom:10px">🗺️</div>
+                            <h3 style="margin-bottom:8px">Curriculum Navigator</h3>
+                            <p style="font-size:14px;opacity:0.9">Explore interactive chapter progression map</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <div style="text-align:center">
+                <a href="student-quiz.html" class="btn">Take a Quiz</a>
+                <a href="index.html" class="btn" style="background:#6c757d">Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let userId = localStorage.getItem('quiz_user_id');
+        
+        // Generate anonymous user ID if not exists
+        if(!userId){
+            userId = 'u_'+Math.random().toString(36).slice(2);
+            localStorage.setItem('quiz_user_id',userId);
+        }
+        
+        async function loadDashboard(){
+            try{
+                // Fetch progress summary
+                const progressRes = await fetch(`http://localhost:3001/api/progress/summary?userId=${userId}`);
+                const progressData = await progressRes.json();
+                
+                // Fetch badges
+                const badgeRes = await fetch(`http://localhost:3001/api/badges?userId=${userId}`);
+                const badgeData = await badgeRes.json();
+                
+                // Hide loading, show dashboard
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                
+                // Display stats
+                document.getElementById('totalQuizzes').textContent = progressData.totalQuizzes;
+                document.getElementById('avgScore').textContent = progressData.totalQuizzes > 0 
+                    ? progressData.averageScore.toFixed(1) + '%' 
+                    : '0%';
+                document.getElementById('badgeCount').textContent = badgeData.earnedCount + '/' + badgeData.totalBadges;
+                
+                if(progressData.weakestSubject){
+                    document.getElementById('weakSubject').textContent = 
+                        progressData.weakestSubject.subject + ' (' + progressData.weakestSubject.avgScore.toFixed(1) + '%)';
+                } else {
+                    document.getElementById('weakSubject').textContent = '—';
+                }
+                
+                // Display badges
+                const badgesHtml = badgeData.badges.map(badge => `
+                    <div class="badge-card ${badge.earned ? 'earned' : 'locked'}">
+                        <div class="badge-icon">${badge.icon}</div>
+                        <div class="badge-label">${badge.label}</div>
+                        <div class="badge-desc">${badge.description}</div>
+                        ${badge.earned ? '<div style="margin-top:10px;font-size:10px">✓ Earned</div>' : '<div style="margin-top:10px;font-size:10px">🔒 Locked</div>'}
+                    </div>
+                `).join('');
+                document.getElementById('badgesGrid').innerHTML = badgesHtml || '<p>No badges available</p>';
+                
+                // Display subject performance
+                if(progressData.bySubject && progressData.bySubject.length > 0){
+                    const subjectHtml = progressData.bySubject.map(s => `
+                        <li>
+                            <span><strong>${s.subject}</strong> (${s.quizzes} quizzes)</span>
+                            <span style="font-weight:bold;color:${s.avgScore >= 80 ? '#27ae60' : s.avgScore >= 60 ? '#f39c12' : '#e74c3c'}">${s.avgScore.toFixed(1)}%</span>
+                        </li>
+                    `).join('');
+                    document.getElementById('subjectList').innerHTML = subjectHtml;
+                } else {
+                    document.getElementById('subjectList').innerHTML = '<li>No quiz attempts yet</li>';
+                }
+                
+                // Display last attempt
+                if(progressData.lastAttempt){
+                    const la = progressData.lastAttempt;
+                    document.getElementById('lastAttempt').innerHTML = `
+                        <p><strong>${la.class} - ${la.subject}</strong></p>
+                        <p>${la.chapter}</p>
+                        <p>Score: <strong style="color:#667eea">${la.score}%</strong></p>
+                        <p style="font-size:12px;color:#999">${new Date(la.date).toLocaleString()}</p>
+                    `;
+                } else {
+                    document.getElementById('lastAttempt').innerHTML = '<p>No quiz attempts yet. <a href="student-quiz.html">Take your first quiz!</a></p>';
+                }
+                
+            }catch(e){
+                document.getElementById('loading').innerHTML = '<p style="color:#e74c3c">Error loading dashboard. Make sure server is running.</p>';
+                console.error(e);
+            }
+        }
+        
+        // Load quiz history with feedback
+        function loadQuizHistory(){
+            try{
+                const progress = JSON.parse(localStorage.getItem('rees_progress') || '[]');
+                const feedback = JSON.parse(localStorage.getItem('teacher_feedback') || '[]');
+                
+                const userProgress = progress.filter(p => p.userId === userId);
+                
+                if(userProgress.length === 0){
+                    document.getElementById('quizHistory').innerHTML = '<p style="color:#999">No quiz history yet. <a href="student-quiz.html">Take your first quiz!</a></p>';
+                    return;
+                }
+                
+                // Sort by date (newest first)
+                userProgress.sort((a,b) => new Date(b.date) - new Date(a.date));
+                
+                const historyHtml = userProgress.map(quiz => {
+                    const teacherFeedback = feedback.find(f => f.progressId === quiz.id);
+                    
+                    return `
+                        <div class="history-item">
+                            <div class="history-header">
+                                <div class="history-title">${quiz.className} - ${quiz.subject}</div>
+                                <div class="history-score">${quiz.score}%</div>
+                            </div>
+                            <div style="color:#7f8c8d;font-size:14px;margin-bottom:8px">${quiz.chapter}</div>
+                            <div class="history-meta">
+                                📅 ${new Date(quiz.date).toLocaleString()} • 
+                                ✓ ${quiz.correct}/${quiz.total} correct
+                            </div>
+                            ${teacherFeedback ? `
+                                <div class="teacher-feedback">
+                                    <div class="feedback-label">
+                                        👩‍🏫 Teacher Feedback by ${teacherFeedback.teacherName} • ${new Date(teacherFeedback.timestamp).toLocaleDateString()}
+                                    </div>
+                                    <div class="feedback-text">${teacherFeedback.feedback}</div>
+                                </div>
+                            ` : '<div style="color:#95a5a6;font-size:13px;margin-top:10px">⏳ Waiting for teacher feedback...</div>'}
+                        </div>
+                    `;
+                }).join('');
+                
+                document.getElementById('quizHistory').innerHTML = historyHtml;
+                
+            }catch(e){
+                console.error('Error loading quiz history:', e);
+                document.getElementById('quizHistory').innerHTML = '<p style="color:#e74c3c">Error loading quiz history</p>';
+            }
+        }
+        
+        // Load dashboard on page load
+        loadDashboard();
+        loadQuizHistory();
+    </script>
+</body>
+</html>

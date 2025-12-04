@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - REES</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:Arial,sans-serif;background:#f5f5f5}
+        .header{background:#667eea;color:#fff;padding:20px;display:flex;justify-content:space-between;align-items:center}
+        .header h1{font-size:24px}
+        .logout{background:#fff;color:#667eea;padding:8px 20px;border:none;border-radius:5px;cursor:pointer}
+        .container{max-width:1200px;margin:30px auto;padding:0 20px}
+        .card{background:#fff;padding:30px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.1);margin-bottom:20px}
+        .form-group{margin-bottom:20px}
+        label{display:block;margin-bottom:5px;font-weight:600;color:#333}
+        input,select,textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:5px;font-size:14px}
+        textarea{min-height:80px;resize:vertical}
+        .btn{background:#667eea;color:#fff;padding:12px 30px;border:none;border-radius:5px;cursor:pointer;font-size:16px;margin-right:10px}
+        .btn:hover{background:#5568d3}
+        .btn-ai{background:#27ae60}
+        .btn-ai:hover{background:#229954}
+        .question{background:#f9f9f9;padding:15px;margin:10px 0;border-radius:5px;border-left:3px solid #667eea}
+        .question-header{display:flex;justify-content:space-between;margin-bottom:10px}
+        .remove-btn{background:#e74c3c;color:#fff;padding:5px 15px;border:none;border-radius:3px;cursor:pointer;font-size:12px}
+        .add-btn{background:#27ae60;color:#fff;padding:8px 20px;border:none;border-radius:5px;cursor:pointer;margin-top:10px}
+        .success{background:#d4edda;color:#155724;padding:15px;border-radius:5px;margin-bottom:20px}
+        .warning{background:#fff3cd;color:#856404;padding:15px;border-radius:5px;margin-bottom:20px}
+        .quiz-list{margin-top:20px}
+        .quiz-item{background:#f9f9f9;padding:15px;margin:10px 0;border-radius:5px;display:flex;justify-content:space-between;align-items:center}
+        .delete-quiz{background:#e74c3c;color:#fff;padding:5px 15px;border:none;border-radius:3px;cursor:pointer}
+        .loading{text-align:center;padding:20px;color:#667eea}
+        .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+        @media(max-width:768px){.grid{grid-template-columns:1fr}}
+        .action-card{transition:transform 0.2s}
+        .action-card:hover{transform:translateY(-5px);box-shadow:0 8px 20px rgba(0,0,0,0.15)}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎓 Teacher Dashboard</h1>
+        <div>
+            <a href="teacher-feedback.html" style="color:#fff;text-decoration:none;margin-right:20px;padding:8px 16px;background:rgba(255,255,255,0.2);border-radius:5px">📝 Feedback</a>
+            <span id="teacherName" style="margin-right:20px;font-size:16px"></span>
+            <button class="logout" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="successMsg"></div>
+        
+        <!-- AI Question Generator -->
+        <div class="card">
+            <h2>🤖 AI Question Generator</h2>
+            <p style="color:#666;margin-bottom:20px">Use Amazon Q Business to generate quiz questions automatically</p>
+            
+            <div class="grid">
+                <div class="form-group">
+                    <label>Class</label>
+                    <select id="aiClass">
+                        <option value="">Select Class</option>
+                        <option value="Class 1">Class 1</option>
+                        <option value="Class 2">Class 2</option>
+                        <option value="Class 3">Class 3</option>
+                        <option value="Class 4">Class 4</option>
+                        <option value="Class 5">Class 5</option>
+                        <option value="Class 6">Class 6</option>
+                        <option value="Class 7">Class 7</option>
+                        <option value="Class 8">Class 8</option>
+                        <option value="Class 9">Class 9</option>
+                        <option value="Class 10">Class 10</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Subject</label>
+                    <input type="text" id="aiSubject" placeholder="e.g., Mathematics, Science, English">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Topic/Chapter</label>
+                <input type="text" id="aiTopic" placeholder="e.g., Fractions, Photosynthesis, Grammar">
+            </div>
+            
+            <div class="form-group">
+                <label>Difficulty</label>
+                <select id="aiDifficulty">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Additional Notes (Optional)</label>
+                <textarea id="aiNotes" placeholder="Any specific requirements or context for the questions..."></textarea>
+            </div>
+            
+            <button class="btn btn-ai" onclick="generateAIQuestions()">✨ Generate Questions with AI</button>
+            <div id="aiLoading"></div>
+        </div>
+
+        <!-- Quiz Creation Form -->
+        <div class="card">
+            <h2>📝 Create Quiz</h2>
+            
+            <div class="grid">
+                <div class="form-group">
+                    <label>Class</label>
+                    <select id="quizClass">
+                        <option value="">Select Class</option>
+                        <option value="Class 1">Class 1</option>
+                        <option value="Class 2">Class 2</option>
+                        <option value="Class 3">Class 3</option>
+                        <option value="Class 4">Class 4</option>
+                        <option value="Class 5">Class 5</option>
+                        <option value="Class 6">Class 6</option>
+                        <option value="Class 7">Class 7</option>
+                        <option value="Class 8">Class 8</option>
+                        <option value="Class 9">Class 9</option>
+                        <option value="Class 10">Class 10</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Subject</label>
+                    <input type="text" id="quizSubject" placeholder="e.g., Mathematics">
+                </div>
+            </div>
+            
+            <div class="grid">
+                <div class="form-group">
+                    <label>Chapter</label>
+                    <input type="text" id="quizChapter" placeholder="e.g., Chapter 1 - Fractions">
+                </div>
+                <div class="form-group">
+                    <label>Difficulty</label>
+                    <select id="quizDifficulty">
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+            </div>
+            
+            <h3 style="margin:20px 0">Questions</h3>
+            <div id="questions"></div>
+            <button class="add-btn" onclick="addQuestion()">+ Add Question Manually</button>
+            
+            <div style="margin-top:30px">
+                <button class="btn" onclick="saveQuiz()">💾 Save Quiz</button>
+            </div>
+        </div>
+
+        <!-- My Quizzes -->
+        <div class="card">
+            <h2>📚 My Quizzes</h2>
+            <div id="quizList" class="quiz-list"></div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="card">
+            <h2>⚡ Quick Actions</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-top:20px">
+                <a href="teacher-feedback.html" style="text-decoration:none" class="action-card">
+                    <div style="background:linear-gradient(135deg,#27ae60,#229954);color:#fff;padding:20px;border-radius:10px;text-align:center;cursor:pointer">
+                        <div style="font-size:48px;margin-bottom:10px">📝</div>
+                        <h3 style="margin-bottom:8px;font-size:16px">Student Feedback</h3>
+                        <p style="font-size:13px;opacity:0.9;margin:0">Review quiz results and provide feedback</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let questions=[];
+        let teacher=JSON.parse(localStorage.getItem('teacher'));
+        let token=localStorage.getItem('teacher_token');
+        
+        // Check authentication
+        if(!teacher||!token){
+            window.location.href='teacher-login.html';
+        }
+        
+        document.getElementById('teacherName').textContent='Welcome, '+teacher.name+'!';
+        
+        // ========================================
+        // AI QUESTION GENERATION
+        // ========================================
+        async function generateAIQuestions(){
+            const className=document.getElementById('aiClass').value;
+            const subject=document.getElementById('aiSubject').value.trim();
+            const topic=document.getElementById('aiTopic').value.trim();
+            const difficulty=document.getElementById('aiDifficulty').value;
+            const notes=document.getElementById('aiNotes').value.trim();
+            
+            if(!className||!subject||!topic){
+                alert('Please fill Class, Subject, and Topic fields');
+                return;
+            }
+            
+            document.getElementById('aiLoading').innerHTML='<div class="loading">🤖 Generating questions with AI... Please wait...</div>';
+            
+            try{
+                const r=await fetch('http://localhost:3001/api/quizzes/ai-suggest',{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json',
+                        'Authorization':'Bearer '+token
+                    },
+                    body:JSON.stringify({className,subject,topic,difficulty,notes})
+                });
+                
+                const d=await r.json();
+                
+                if(d.success){
+                    // Add AI-generated questions to the list
+                    d.questions.forEach(q=>{
+                        questions.push({
+                            id:Date.now()+Math.random(),
+                            q:q.q,
+                            options:q.options,
+                            answerIndex:q.answerIndex,
+                            explanation:q.explanation||''
+                        });
+                    });
+                    
+                    // Auto-fill quiz form
+                    document.getElementById('quizClass').value=className;
+                    document.getElementById('quizSubject').value=subject;
+                    document.getElementById('quizChapter').value=topic;
+                    document.getElementById('quizDifficulty').value=difficulty;
+                    
+                    renderQuestions();
+                    
+                    let msg='<div class="success">✅ Generated '+d.questions.length+' questions! Review and edit below, then save.</div>';
+                    if(d.warning){
+                        msg='<div class="warning">⚠️ '+d.warning+'</div>';
+                    }
+                    document.getElementById('aiLoading').innerHTML=msg;
+                    
+                    // Scroll to questions
+                    document.getElementById('questions').scrollIntoView({behavior:'smooth'});
+                }else{
+                    document.getElementById('aiLoading').innerHTML='<div class="error">Error: '+(d.error||'Failed to generate')+'</div>';
+                }
+            }catch(e){
+                document.getElementById('aiLoading').innerHTML='<div class="error">Server error. Check console.</div>';
+                console.error(e);
+            }
+        }
+        
+        // ========================================
+        // QUESTION MANAGEMENT
+        // ========================================
+        function addQuestion(){
+            const id=Date.now()+Math.random();
+            questions.push({id,q:'',options:['','','',''],answerIndex:0,explanation:''});
+            renderQuestions();
+        }
+        
+        function removeQuestion(id){
+            questions=questions.filter(q=>q.id!==id);
+            renderQuestions();
+        }
+        
+        function updateQuestion(id,field,value){
+            const q=questions.find(q=>q.id===id);
+            if(q)q[field]=value;
+        }
+        
+        function updateOption(id,index,value){
+            const q=questions.find(q=>q.id===id);
+            if(q)q.options[index]=value;
+        }
+        
+        function renderQuestions(){
+            const container=document.getElementById('questions');
+            if(questions.length===0){
+                container.innerHTML='<p style="color:#999">No questions yet. Use AI generator or add manually.</p>';
+                return;
+            }
+            
+            container.innerHTML='';
+            questions.forEach((q,idx)=>{
+                const div=document.createElement('div');
+                div.className='question';
+                div.innerHTML=`
+                    <div class="question-header">
+                        <strong>Question ${idx+1}</strong>
+                        <button class="remove-btn" onclick="removeQuestion(${q.id})">Remove</button>
+                    </div>
+                    <input type="text" placeholder="Enter question" style="margin-bottom:10px" data-qid="${q.id}" data-field="q">
+                    <div data-qid="${q.id}" class="options-container"></div>
+                    <input type="text" placeholder="Explanation (optional)" style="margin-top:10px;font-size:12px;color:#666" data-qid="${q.id}" data-field="explanation">
+                `;
+                
+                // Set question text
+                const qInput=div.querySelector('[data-field="q"]');
+                qInput.value=q.q;
+                qInput.oninput=function(){updateQuestion(q.id,'q',this.value)};
+                
+                // Set explanation
+                const expInput=div.querySelector('[data-field="explanation"]');
+                expInput.value=q.explanation||'';
+                expInput.oninput=function(){updateQuestion(q.id,'explanation',this.value)};
+                
+                // Add options
+                const optContainer=div.querySelector('.options-container');
+                q.options.forEach((opt,i)=>{
+                    const optDiv=document.createElement('div');
+                    optDiv.style.cssText='display:flex;gap:10px;margin:5px 0;align-items:center';
+                    
+                    const radio=document.createElement('input');
+                    radio.type='radio';
+                    radio.name='correct'+q.id;
+                    radio.checked=q.answerIndex===i;
+                    radio.onchange=()=>updateQuestion(q.id,'answerIndex',i);
+                    
+                    const optInput=document.createElement('input');
+                    optInput.type='text';
+                    optInput.placeholder='Option '+(i+1);
+                    optInput.value=opt;
+                    optInput.style.flex='1';
+                    optInput.oninput=function(){updateOption(q.id,i,this.value)};
+                    
+                    optDiv.appendChild(radio);
+                    optDiv.appendChild(optInput);
+                    optContainer.appendChild(optDiv);
+                });
+                
+                container.appendChild(div);
+            });
+        }
+        
+        // ========================================
+        // SAVE QUIZ
+        // ========================================
+        async function saveQuiz(){
+            const className=document.getElementById('quizClass').value;
+            const subject=document.getElementById('quizSubject').value.trim();
+            const chapter=document.getElementById('quizChapter').value.trim();
+            const difficulty=document.getElementById('quizDifficulty').value;
+            
+            if(!className){
+                alert('Please select a Class');
+                return;
+            }
+            if(!subject){
+                alert('Please enter Subject');
+                return;
+            }
+            if(!chapter){
+                alert('Please enter Chapter');
+                return;
+            }
+            if(questions.length===0){
+                alert('Please add at least one question.\n\nClick "+ Add Question Manually" button or use AI Generator.');
+                return;
+            }
+            
+            // Validate questions
+            for(let q of questions){
+                if(!q.q||q.options.some(o=>!o)){
+                    alert('Please fill all question fields and options');
+                    return;
+                }
+            }
+            
+            try{
+                const r=await fetch('http://localhost:3001/api/quizzes',{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json',
+                        'Authorization':'Bearer '+token
+                    },
+                    body:JSON.stringify({className,subject,chapter,difficulty,questions})
+                });
+                
+                const d=await r.json();
+                
+                if(d.success){
+                    document.getElementById('successMsg').innerHTML='<div class="success">✅ Quiz saved successfully!</div>';
+                    
+                    // Clear form
+                    document.getElementById('quizClass').value='';
+                    document.getElementById('quizSubject').value='';
+                    document.getElementById('quizChapter').value='';
+                    document.getElementById('quizDifficulty').value='easy';
+                    document.getElementById('aiClass').value='';
+                    document.getElementById('aiSubject').value='';
+                    document.getElementById('aiTopic').value='';
+                    document.getElementById('aiNotes').value='';
+                    document.getElementById('aiLoading').innerHTML='';
+                    questions=[];
+                    renderQuestions();
+                    loadQuizzes();
+                    
+                    setTimeout(()=>document.getElementById('successMsg').innerHTML='',5000);
+                    window.scrollTo({top:0,behavior:'smooth'});
+                }else{
+                    alert('Error: '+(d.error||'Failed to save'));
+                }
+            }catch(e){
+                alert('Server error');
+                console.error(e);
+            }
+        }
+        
+        // ========================================
+        // LOAD MY QUIZZES
+        // ========================================
+        async function loadQuizzes(){
+            try{
+                const r=await fetch('http://localhost:3001/api/quizzes/my',{
+                    headers:{'Authorization':'Bearer '+token}
+                });
+                const d=await r.json();
+                
+                if(d.success){
+                    const html=d.quizzes.map(q=>`
+                        <div class="quiz-item">
+                            <div>
+                                <strong>${q.className} - ${q.subject}</strong><br>
+                                <small>${q.chapter} • ${q.difficulty} • ${q.questions.length} questions</small>
+                            </div>
+                            <button class="delete-quiz" onclick="deleteQuiz('${q.id}')">Delete</button>
+                        </div>
+                    `).join('');
+                    document.getElementById('quizList').innerHTML=html||'<p style="color:#999">No quizzes yet</p>';
+                }
+            }catch(e){
+                console.error(e);
+            }
+        }
+        
+        async function deleteQuiz(id){
+            if(!confirm('Delete this quiz?'))return;
+            try{
+                const r=await fetch('http://localhost:3001/api/quizzes/'+id,{
+                    method:'DELETE',
+                    headers:{'Authorization':'Bearer '+token}
+                });
+                const d=await r.json();
+                if(d.success)loadQuizzes();
+            }catch(e){
+                alert('Error deleting quiz');
+            }
+        }
+        
+        function logout(){
+            localStorage.removeItem('teacher_token');
+            localStorage.removeItem('teacher');
+            window.location.href='teacher-login.html';
+        }
+        
+        // Initialize
+        renderQuestions();
+        loadQuizzes();
+    </script>
+</body>
+</html>

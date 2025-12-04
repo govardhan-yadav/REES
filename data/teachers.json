@@ -1,0 +1,16 @@
+[
+  {
+    "id": "seed_1",
+    "name": "Demo Teacher",
+    "email": "teacher@demo.com",
+    "password": "$2a$10$8K1p/a0dL3.I9/YS5sssmu.CdneOXo98qC5.Xz8Vb0xpl6pjsQ66i",
+    "createdAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "1764223456577",
+    "name": "varun",
+    "email": "varun@gmail.com",
+    "password": "$2a$10$yufdCJJIIORdaSksLyMH3.dzWi.6YO3MgqUa0EuqjWygdSjBOcso.",
+    "createdAt": "2025-11-27T06:04:16.577Z"
+  }
+]

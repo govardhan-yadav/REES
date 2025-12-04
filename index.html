@@ -1,0 +1,1866 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="TemplateMo">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+
+    
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="assets/css/fontawesome.css">
+    <link rel="stylesheet" href="assets/css/templatemo-edu-meeting.css">
+    <link rel="stylesheet" href="assets/css/owl.css">
+    <link rel="stylesheet" href="assets/css/lightbox.css">
+<!--
+
+
+-->
+<style>
+
+  .dashboard-section {
+  padding: 36px 0;
+  background: linear-gradient(180deg, #000b1a, #00152c);
+  color: #e8f3ff;
+}
+.dashboard-section .section-title { color:#bfe0ff; }
+.dashboard-section .section-sub { color:#9fcaff; }
+
+.dash-grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+  gap:14px;
+  margin-top:14px;
+}
+.dash-card {
+  background: rgba(255,255,255,0.03);
+  border-radius:10px;
+  padding:14px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.5);
+}
+.dash-card h3 {
+  margin:0 0 8px;
+  font-size:16px;
+  color:#cfe6ff;
+}
+.dash-card p {
+  margin:0;
+  font-size:20px;
+  font-weight:600;
+}
+.dash-card.dash-wide {
+  grid-column: 1 / -1;
+}
+#dash-subject-list,
+#dash-badges {
+  list-style:none;
+  margin:0;
+  padding:0;
+  font-size:14px;
+}
+#dash-subject-list li,
+#dash-badges li {
+  padding:4px 0;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+#dash-badges li span {
+  display:inline-block;
+  padding:2px 6px;
+  border-radius:999px;
+  background:rgba(0,140,255,0.2);
+  margin-right:6px;
+}
+#dash-anon p {
+  margin:0 0 8px;
+}
+
+
+#chatbot-btn{position:fixed;bottom:20px;right:20px;width:60px;height:60px;border-radius:50%;background:#007bff;color:#fff;border:none;font-size:28px;cursor:pointer;box-shadow:0 4px 12px rgba(0,123,255,0.4);z-index:9999;transition:transform 0.2s}#chatbot-btn:hover{transform:scale(1.1)}#chatbot-modal{display:none;position:fixed;bottom:90px;right:20px;width:350px;max-width:90vw;height:500px;background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.3);z-index:9999;flex-direction:column}#chatbot-modal.show{display:flex}.chat-header{background:#007bff;color:#fff;padding:12px;border-radius:12px 12px 0 0;display:flex;justify-content:space-between;align-items:center}.chat-header h3{margin:0;font-size:16px}#close-chat{background:none;border:none;color:#fff;font-size:20px;cursor:pointer}.chat-messages{flex:1;padding:10px;overflow-y:auto;background:#f5f5f5}.chat-msg{margin:8px 0;padding:8px 12px;border-radius:8px;max-width:80%;word-wrap:break-word}.chat-msg.user{background:#007bff;color:#fff;margin-left:auto;text-align:right}.chat-msg.bot{background:#e9ecef;color:#333}.chat-input-area{display:flex;padding:10px;border-top:1px solid #ddd}#chat-msg-input{flex:1;padding:8px;border:1px solid #ddd;border-radius:6px;outline:none}#send-chat-btn{background:#007bff;color:#fff;border:none;padding:8px 16px;margin-left:8px;border-radius:6px;cursor:pointer}#send-chat-btn:hover{background:#0056b3}
+
+
+  /* === Shared Search & Animation Styles === */
+
+.search-filter-wrap {
+  padding: 20px 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
+}
+.search-filter {
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  padding:12px;
+}
+.search-filter input[type="search"] {
+  width: min(720px, 60%);
+  min-width:260px;
+  padding:10px 14px;
+  border-radius:8px;
+  border:1px solid #d0d7de;
+  box-shadow: 0 4px 12px rgba(16,24,40,0.04);
+  font-size:14px;
+}
+.search-filter select {
+  padding:10px 12px;
+  border-radius:8px;
+  border:1px solid #d0d7de;
+  font-size:14px;
+  background:#fff;
+}
+.result-count {
+  font-size:14px;
+  color:#333;
+  margin-left:6px;
+}
+
+/* Small screens */
+@media (max-width:640px) {
+  .search-filter input[type="search"] { width:100%; }
+  .search-filter { gap:10px; padding:8px; }
+  .result-count { width:100%; text-align:center; margin-top:6px; }
+}
+
+/* === Shared card animation === */
+.fade-slide {
+  opacity: 0;
+  transform: translateY(18px) scale(0.995);
+  transition: opacity 560ms cubic-bezier(.2,.8,.2,1), transform 560ms cubic-bezier(.2,.8,.2,1);
+}
+.fade-slide.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Provide a small focus outline for keyboard users */
+.course-card:focus-within,
+.book-card:focus-within {
+  outline: 3px solid rgba(0,123,255,0.15);
+  outline-offset: 6px;
+}
+
+/* Optional: slightly reduce card shadow on reduce-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .fade-slide { transition: none; transform: none; opacity:1; }
+}
+
+/* Keep responsive grid consistent (if not using bootstrap) */
+@media (min-width:992px) {
+  /* nothing required — Bootstrap grid will handle columns if present */
+}
+
+/* Video Courses card styles */
+/* ===== Beautiful Books Section ===== */
+.our-books {
+  background: linear-gradient(135deg, #1a1a1a, #003366);
+  padding: 60px 0;
+}
+
+.section-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.section-sub {
+  font-size: 15px;
+  opacity: 0.85;
+}
+
+/* Card Styling */
+.book-card {
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  transition: transform 0.25s ease, box-shadow 0.3s ease;
+}
+
+.book-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.2);
+}
+
+.book-card .thumb {
+  background: linear-gradient(135deg, #003366, #0059b3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 180px;
+}
+
+.book-card .thumb img {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(255,255,255,0.2));
+  transition: transform 0.3s ease;
+}
+
+.book-card:hover .thumb img {
+  transform: scale(1.1);
+}
+
+.book-card .down-content {
+  padding: 18px 14px 24px;
+}
+
+.book-card h4 {
+  font-weight: 600;
+  font-size: 18px;
+  color: #222;
+}
+
+.book-card p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+/* Buttons */
+.book-card .btns {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn {
+  padding: 7px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: #0059b3;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #007bff;
+}
+
+.btn-outline {
+  background: transparent;
+  color: #0059b3;
+  border: 1px solid #0059b3;
+}
+
+.btn-outline:hover {
+  background: #0059b3;
+  color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .book-card .thumb { height: 140px; }
+  .book-card .thumb img { width: 70px; height: 70px; }
+}
+
+
+.course-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  transition: transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s;
+  margin-bottom: 28px;
+}
+.course-card:hover { transform: translateY(-6px); box-shadow: 0 14px 30px rgba(0,0,0,0.12); }
+
+.course-card .thumb { position: relative; overflow: hidden; }
+.course-card img { width:100%; height:200px; object-fit:cover; display:block; transition: transform .4s ease; }
+.course-card:hover img { transform: scale(1.05); }
+
+.course-card .overlay {
+  position:absolute; inset:0;
+  background: rgba(0,0,0,0.38);
+  opacity: 0;
+  display:flex; align-items:center; justify-content:center;
+  transition: opacity .28s ease;
+}
+.course-card:hover .overlay { opacity:1; }
+
+.play-btn {
+  background:#fff; color:#222; font-size:20px; border-radius:50%; padding:10px 13px; text-decoration:none;
+  display:inline-flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.12);
+}
+.down-content { padding:18px; }
+.down-content h4 { font-size:18px; margin:0 0 8px; font-weight:600; }
+.down-content p { font-size:14px; color:#666; margin:0 0 12px; }
+
+/* Buttons */
+.btn.btn-primary { background:#007bff; color:#fff; padding:8px 12px; border-radius:6px; text-decoration:none; display:inline-block; }
+
+/* Simple fade-in animation used by JS */
+.fade-in {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: fadeUp .6s forwards;
+}
+@keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+
+/* Responsive tweaks (if you're not using Bootstrap) */
+@media (max-width:767px) {
+  .course-card img { height:160px; }
+}
+/* Scroll to Top Floating Button */
+.scroll-top-btn {
+  position: fixed;
+  bottom: 90px;      /* Above dark mode button */
+  right: 22px;
+  width: 45px;
+  height: 45px;
+  background: #111;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid #333;
+  z-index: 9999;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+  opacity: 0;
+  visibility: hidden;
+  transition: all .4s ease;
+}
+
+.scroll-top-btn.show {
+  opacity: 1;
+  visibility: visible;
+}
+.scroll-top-btn:hover {
+  background: #222;
+  transform: scale(1.15);
+}
+/* Fade-in base state */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.7s ease-out;
+}
+
+/* When element becomes visible */
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+</style>
+
+  </head>
+
+<body>
+
+<button id="chatbot-btn" title="Chat with AI Assistant">💬</button>
+<div id="chatbot-modal">
+  <div class="chat-header">
+    <h3>🤖 AI Assistant</h3>
+    <button id="close-chat">✕</button>
+  </div>
+  <div class="chat-messages" id="chat-messages"></div>
+  <div class="chat-input-area">
+    <input type="text" id="chat-msg-input" placeholder="Ask about NCERT books, courses...">
+    <button id="send-chat-btn">Send</button>
+  </div>
+</div>
+
+
+ 
+
+  <!-- ***** Header Area Start ***** -->
+  <header class="header-area header-sticky">
+      <div class="container">
+          <div class="row">
+              <div class="col-12">
+                  <nav class="main-nav">
+                      <!-- ***** Logo Start ***** -->
+                      <img src="assets/images/Black and White Monochrome Tech Logo-fotor-2023092695552.png" class="rees"  alt="" srcset=""> 
+                     
+                      <a href="" class="logo">
+                          <span>R</span>URAL <span>E</span>DUCATION <span>E</span>NHANCEMENT <span>S</span>YSTEM  </a>
+                     
+                      
+                      <!-- ***** Logo End ***** -->
+                      <!-- ***** Menu Start ***** -->
+                      <ul class="nav">
+                  
+
+                          <li class="scroll-to-section"><a href="#top" class="active">Home</a></li>
+                          <li><a href="meetings.html">Books</a></li>
+                          <!-- <li class="scroll-to-section"><a href="#apply">Apply Now</a></li> -->
+                          <li><a href="teacher-dashboard.html">🎓 Teacher</a></li>
+                          <li><a href="student-quiz.html">📝 Quiz</a></li>
+                          <li><a href="student-dashboard.html">📊 Dashboard</a></li>
+                          <li><a href="offline-library.html">📚 Offline</a></li>
+                          <li class="scroll-to-section"><a href="#courses">Courses</a></li> 
+                          <li class="scroll-to-section"><a href="#contact">Contact Us</a></li> 
+                          <a href="s.html"><li class="scroll-to-section login">Login</li></a>
+                      </ul>        
+                      <a class='menu-trigger'>
+                          <span>Menu</span>
+                      </a>
+                      <p class="govt" style="margin-left: -520px;float: left;">Government Of Karnataka</p>
+                      <!-- ***** Menu End ***** -->
+                  </nav>
+              </div>
+          </div>
+      </div>
+  </header>
+  <!-- ***** Header Area End ***** -->
+
+  <!-- ***** Main Banner Area Start ***** -->
+  <section class="section main-banner" id="top" data-section="section1">
+      <video autoplay muted loop id="bg-video">
+          <source src="assets/images/course-video.mp4" type="video/mp4" />
+      </video>
+
+      <div class="video-overlay header-text"class="video-card fade-in">
+>
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="caption">
+              <h6>Hello Students</h6>
+              <h2 class="re">Welcome to <span>REES</span></h2>
+              <p>Welcome to our education website, your online hub for learning and growth. We're here to help you on your educational journey, no matter where you're starting from or where you want to go. Explore a world of knowledge at your fingertips with our user-friendly platform. Dive in, learn, and grow with us!</p>
+              <div class="main-button-red">
+                  <div class="scroll-to-section"><a href="#contact">Join Us Now!</a></div>
+              </div>
+          </div>
+              </div>
+            </div>
+          </div>
+      </div>
+  </section>
+  <!-- ***** Main Banner Area End ***** -->
+
+  <section class="services">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="owl-service-item owl-carousel">
+          
+            <div class="item">
+              <div class="icon">
+                <img src="assets/images/service-icon-01.png" alt="">
+              </div>
+              <div class="down-content">
+                <h4>Student Academic Records</h4>
+                <p> Information on students' classes and grades.Student Academic Records section can assist you in keeping track of your academic progress</p>
+              </div>
+            </div>
+            
+            <div class="item">
+              <div class="icon">
+                <img src="assets/images/service-icon-02.png" alt="">
+              </div>
+              <div class="down-content">
+                <h4>DIGITAL LEARNING HUB</h4>
+                <p>Diverse content, interactive courses, expert instructors, and flexible access. Empowering your learning journey anytime, anywhere, on any device.</p>
+              </div>
+            </div>
+            
+            <div class="item">
+              <div class="icon">
+                <img src="assets/images/service-icon-03.png" alt="">
+              </div>
+              <div class="down-content">
+                <h4>Enhancing Communication Skills</h4>
+                <p>Expert guidance, interactive practice, personalized learning. Elevate your communication abilities with our resources and supportive community and be strong in your soft skills.</p> </div>
+            </div>
+            
+            <div class="item">
+              <div class="icon">
+                <img src="assets/images/service-icon-02.png" alt="">
+              </div>
+              <div class="down-content">
+                <h4>Financial Aid Overview</h4>
+                <p>Explore scholarships, grants, loans, and application guidance. We simplify the financial aid process to support your educational goals and aceive your aim.</p></div>
+            </div>
+            
+            <div class="item">
+              <div class="icon">
+                <img src="assets/images/service-icon-03.png" alt="">
+              </div>
+              <div class="down-content">
+                <h4>Job Opportunity Guide</h4>
+                <p>Resume tips, job listings, career exploration, and networking strategies. Your comprehensive resource for navigating the path to a successful career.</p>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="upcoming-meetings" id="meetings">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="section-heading">
+            <h2>Our Books</h2>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="categories">
+            <h4>Book Catgories</h4>
+            <ul>
+              <li><a href="#">Popular Books</a></li>
+              <li><a href="#">Important Books</a></li>
+              <li><a href="#">Attractibve Books</a></li>
+                          </ul>
+            <div class="main-button-red">
+              <a href="meetings.html">All Our Books</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-8">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="meeting-item">
+                <div class="thumb">
+                  
+                  <a href="meeting-details.html"><img src="https://miro.medium.com/max/1800/1*5eV1xmJs2-sJ4DdejfdnQA.png" alt="New Lecturer Meeting"></a>
+                </div>
+                <div class="down-content">
+                  
+                  <a href="meeting-details.html"><h4>Javascript</h4></a>
+                      <p class="card-text">
+                        Explore JavaScript with our beginner-friendly guide. Master the fundamentals, from variables to DOM manipulation, and start building interactive web applications. Get started today!
+                      </p>
+                   
+            <a href="https://drive.google.com/uc?export=download&id=1BMBUe28a0Fy0S7gzAe9A2K_Yl6FU64df"
+               class="btn btn-info" data-toggle="tooltip" data-bs-placement="right" title="Download Book">Download Book</a>
+                    </div>
+                  </div>
+                </div>
+
+
+            <div class="col-lg-6">
+              <div class="meeting-item">
+                <div class="thumb">
+                  
+                  <a href="meeting-details.html"><img src="https://miro.medium.com/max/840/1*RJMxLdTHqVBSijKmOO5MAg.jpeg" alt="Online Teaching"></a>
+                </div>
+                <div class="down-content">
+                  
+                  <a href="meeting-details.html"><h4> Python Programming</h4></a>
+                      <p class="card-text">
+                        Dive into Python with our comprehensive book. Learn the language from the ground up, write efficient code, and unlock endless possibilities in web development, data science, and more.
+                      </p>
+                      <a href="https://drive.google.com/uc?export=download&id=1M3T2fGLETRd9noFzbI5jCFmifo0LxFN0" class="btn btn-info" data-toggle="tooltip" data-bs-placement="right" title="Download Book">Download Book</a>
+            
+                    </div>
+                  </div>
+                </div>
+
+
+            <div class="col-lg-6">
+              <div class="meeting-item">
+                <div class="thumb">
+                  
+                  <a href="meeting-details.html"><img src="https://d1jnx9ba8s6j9r.cloudfront.net/imgver.1551437392/img/co_img_193_1504782213.png" alt="Higher Education"></a>
+                </div>
+                <div class="down-content">
+                  <a href="meeting-details.html"><h4>Java Programming</h4></a>
+                  <p class="card-text">Embark on a Java journey with our in-depth guide. Learn Java's core concepts, build applications, and become a proficient Java developer. Start coding with confidence today since java has a significat role.</p>
+                  <a href="https://drive.google.com/uc?export=download&id=1__q3kYulG3lxv9TFiqfcFLcRHCfZ4-WS" class="btn btn-info" data-toggle="tooltip" data-bs-placement="right" title="Download Book">Download Book</a>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-lg-6">
+              <div class="meeting-item">
+                <div class="thumb">
+                  
+                  <a href="meeting-details.html"><img src="https://www.vtc.com/files/images/courses/33797.jpeg" alt="Student Training"></a>
+                </div>
+                <div class="down-content">
+                  <a href="meeting-details.html"><h4>C++ programming</h4></a>
+                  <p class="card-text">
+                    Discover the power of C++ programming with our comprehensive guide. Learn from the fundamentals to advanced techniques and unleash your potential in software development. Start coding today!</p>
+                    <a href="https://drive.google.com/uc?export=download&id=15gHo3X1XZN3TVJ74he1o0nmBXvPhxCj6" class="btn btn-info" data-toggle="tooltip" data-bs-placement="right" title="Download Book" download>Download Book</a>
+        
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="apply-now" id="apply">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 align-self-center">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="item">
+                <h3>JOB OPPURTUNITY GUIDE</h3>
+                <p>You are allowed to use this edu meeting CSS template for your school or university or business. You can feel free to modify or edit this layout.</p>
+                <div class="main-button-red">
+                  <div class="scroll-to-section"><a href="#contact">Learn more!</a></div>
+              </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="item">
+                <h3>FINANCIAL AID OVERVIEW</h3>
+                <p>You are not allowed to redistribute the template ZIP file on any other template website. Please contact us for more information.</p>
+                <div class="main-button-yellow">
+                  <div class="scroll-to-section"><a href="#contact">Learn more!</a></div>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="accordions is-first-expanded">
+            <article class="accordion">
+                <div class="accordion-head">
+                    <span>About our job appurtunity guide</span>
+                    <span class="icon">
+                        <i class="icon fa fa-chevron-right"></i>
+                    </span>
+                </div>
+                <div class="accordion-body">
+                    <div class="content">
+                        <p>Discover your path to career success with our Job Opportunity Guide. From resume building and interview preparation to career exploration and networking strategies, we provide essential resources to help you secure your dream job. Explore industry insights, job listings, and expert advice to navigate your career journey with confidence. Join our community of job seekers and professionals, and unlock the doors to a fulfilling career today.</p></div>
+                </div>
+            </article>
+            
+            
+            <article class="accordion last-accordion">
+                <div class="accordion-head">
+                    <span>Financial aid overview</span>
+                    <span class="icon">
+                        <i class="icon fa fa-chevron-right"></i>
+                    </span>
+                </div>
+                <div class="accordion-body">
+                    <div class="content">
+                        <p>Navigating the financial aspect of education can be challenging. Our Financial Aid Overview is your comprehensive guide to scholarships, grants, loans, and application processes. We simplify the complexities of financial aid, helping you access the resources you need to achieve your educational goals. Explore a wealth of information, find application guidance, and stay informed about the latest opportunities. We're here to bridge the gap between your aspirations and the financial support you need for your educational journey.</p> </div>
+                </div>
+            </article>
+        </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="our-courses" id="courses">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="section-heading">
+            <h2>Our Popular Courses</h2>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="owl-courses-item owl-carousel">
+            <div class="item">
+              <img src="assets/images/course-01.jpg" alt="Course One">
+              <div class="down-content">
+                <h4>Andriod Developer</h4>
+                <div class="info">
+                  <div class="row">
+                    <div class="col-8">
+                      <ul>
+                        <a href="fro.html" class="btn btn-info" >Road Map</a>
+                      </ul>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="item">
+              <img src="assets/images/course-02.jpg" alt="Course Two">
+              <div class="down-content">
+                <h4>Communication Skills</h4>
+                <div class="info">
+                  <div class="row">
+                    <div class="col-8">
+                      <ul>
+                        <a href="a.html" class="btn btn-info" >Road Map</a>
+                      </ul>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="item">
+              <img src="assets/images/course-03.jpg" alt="">
+              <div class="down-content">
+                <h4>Angular</h4>
+                <div class="info">
+                  <div class="row">
+                    <div class="col-8">
+                      <ul>
+                        <a href="b.html" class="btn btn-info" >Road Map</a>
+                      </ul>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="item">
+              <img src="assets/images/course-04.jpg" alt="">
+              <div class="down-content">
+                <h4>React</h4>
+                <div class="info">
+                  <div class="row">
+                    <div class="col-8">
+                      <ul>
+                        <a href="c.html" class="btn btn-info" >Road Map</a>
+                      </ul>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="item">
+              <img src="assets/images/course-01.jpg" alt="">
+              <div class="down-content">
+                <h4>JavaScript</h4>
+                <div class="info">
+                  <div class="row">
+                    <div class="col-8">
+                      <ul>
+                        <a href="d.html" class="btn btn-info" >Road Map</a>
+                      </ul>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="item">
+              <img src="assets/images/course-02.jpg" alt="">
+              <div class="down-content">
+                <h4>PostgreSQL</h4>
+                <div class="info">
+                  <div class="row">
+                    <div class="col-8">
+                      <ul>
+                        <a href="e.html" class="btn btn-info" >Road Map</a>
+                      </ul>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+           
+            
+           
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ====================== IMPROVED BOOKS SECTION (Grades 1–10) ====================== -->
+<section class="our-books" id="books" class="fade-in">
+>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center mb-5">
+        <h2 class="section-title text-white">📚 NCERT <em>Books</em> for Std. <span>1–10</span></h2>
+        <p class="section-sub text-light">Download the latest NCERT textbooks (official PDFs) and quick-access versions for all classes.</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Example Book Card Template -->
+      <!-- Duplicate and change class number and links as shown below -->
+
+      <!-- Class 1 -->
+      <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <div class="book-card">
+          <div class="thumb">
+            <img loading="lazy" src="https://cdn-icons-png.flaticon.com/512/2995/2995303.png" alt="NCERT Class 1 Books">
+          </div>
+          <div class="down-content">
+            <h4>Class 1</h4>
+            <p>English • Hindi • EVS</p>
+            <div class="btns">
+              <a href="https://ncert.nic.in/textbook.php" target="_blank" rel="noopener noreferrer" class="btn btn-primary">NCERT</a>
+              <a href="https://www.vedantu.com/ncert-books/ncert-books-class-1" target="_blank" rel="noopener noreferrer" class="btn btn-outline">Vedantu</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Class 2 -->
+      <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <div class="book-card">
+          <div class="thumb">
+            <img loading="lazy" src="https://cdn-icons-png.flaticon.com/512/2232/2232688.png" alt="NCERT Class 2 Books">
+          </div>
+          <div class="down-content">
+            <h4>Class 2</h4>
+            <p>Math • English • Hindi</p>
+            <div class="btns">
+              <a href="https://ncert.nic.in/textbook.php" target="_blank" class="btn btn-primary">NCERT</a>
+              <a href="https://www.vedantu.com/ncert-books/ncert-books-class-2" target="_blank" class="btn btn-outline">Vedantu</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Class 3 -->
+      <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <div class="book-card">
+          <div class="thumb">
+            <img loading="lazy" src="https://cdn-icons-png.flaticon.com/512/1048/1048943.png" alt="NCERT Class 3 Books">
+          </div>
+          <div class="down-content">
+            <h4>Class 3</h4>
+            <p>EVS • Language • Maths</p>
+            <div class="btns">
+              <a href="https://ncert.nic.in/textbook.php" target="_blank" class="btn btn-primary">NCERT</a>
+              <a href="https://www.vedantu.com/ncert-books/ncert-books-class-3" target="_blank" class="btn btn-outline">Vedantu</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Class 4 -->
+      <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <div class="book-card">
+          <div class="thumb">
+            <img loading="lazy" src="https://cdn-icons-png.flaticon.com/512/1903/1903162.png" alt="NCERT Class 4 Books">
+          </div>
+          <div class="down-content">
+            <h4>Class 4</h4>
+            <p>Math • EVS • English</p>
+            <div class="btns">
+              <a href="https://ncert.nic.in/textbook.php" target="_blank" class="btn btn-primary">NCERT</a>
+              <a href="https://www.vedantu.com/ncert-books/ncert-books-class-4" target="_blank" class="btn btn-outline">Vedantu</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Class 5 -->
+      <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <div class="book-card">
+          <div class="thumb">
+            <img loading="lazy" src="https://cdn-icons-png.flaticon.com/512/2972/2972211.png" alt="NCERT Class 5 Books">
+          </div>
+          <div class="down-content">
+            <h4>Class 5</h4>
+            <p>Math • Science • English</p>
+            <div class="btns">
+              <a href="https://ncert.nic.in/textbook.php" target="_blank" class="btn btn-primary">NCERT</a>
+              <a href="https://www.vedantu.com/ncert-books/ncert-books-class-5" target="_blank" class="btn btn-outline">Vedantu</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Class 6 -->
+      <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <div class="book-card">
+          <div class="thumb">
+            <img loading="lazy" src="https://cdn-icons-png.flaticon.com/512/1079/1079759.png" alt="NCERT Class 6 Books">
+          </div>
+          <div class="down-content">
+            <h4>Class 6</h4>
+            <p>Math • Science • SST</p>
+            <div class="btns">
+              <a href="https://ncert.nic.in/textbook.php" target="_blank" class="btn btn-primary">NCERT</a>
+              <a href="https://www.vedantu.com/ncert-books/ncert-books-class-6" target="_blank" class="btn btn-outline">Vedantu</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Class 7 -->
+      <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <div class="book-card">
+          <div class="thumb">
+            <img loading="lazy" src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png" alt="NCERT Class 7 Books">
+          </div>
+          <div class="down-content">
+            <h4>Class 7</h4>
+            <p>Science • Maths • History</p>
+            <div class="btns">
+              <a href="https://ncert.nic.in/textbook.php" target="_blank" class="btn btn-primary">NCERT</a>
+              <a href="https://www.vedantu.com/ncert-books/ncert-books-class-7" target="_blank" class="btn btn-outline">Vedantu</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Class 8 -->
+      <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <div class="book-card">
+          <div class="thumb">
+            <img loading="lazy" src="https://cdn-icons-png.flaticon.com/512/2829/2829779.png" alt="NCERT Class 8 Books">
+          </div>
+          <div class="down-content">
+            <h4>Class 8</h4>
+            <p>Math • Science • Civics</p>
+            <div class="btns">
+              <a href="https://ncert.nic.in/textbook.php" target="_blank" class="btn btn-primary">NCERT</a>
+              <a href="https://www.vedantu.com/ncert-books/ncert-books-class-8" target="_blank" class="btn btn-outline">Vedantu</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Class 9 -->
+      <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <div class="book-card">
+          <div class="thumb">
+            <img loading="lazy" src="https://cdn-icons-png.flaticon.com/512/3135/3135789.png" alt="NCERT Class 9 Books">
+          </div>
+          <div class="down-content">
+            <h4>Class 9</h4>
+            <p>Math • Science • Geography</p>
+            <div class="btns">
+              <a href="https://ncert.nic.in/textbook.php" target="_blank" class="btn btn-primary">NCERT</a>
+              <a href="https://www.vedantu.com/ncert-books/ncert-books-class-9" target="_blank" class="btn btn-outline">Vedantu</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Class 10 -->
+      <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <div class="book-card">
+          <div class="thumb">
+            <img loading="lazy" src="https://cdn-icons-png.flaticon.com/512/3649/3649394.png" alt="NCERT Class 10 Books">
+          </div>
+          <div class="down-content">
+            <h4>Class 10</h4>
+            <p>Board Subjects • All Streams</p>
+            <div class="btns">
+              <a href="https://ncert.nic.in/textbook.php" target="_blank" class="btn btn-primary">NCERT</a>
+              <a href="https://www.vedantu.com/ncert-books/ncert-books-class-10" target="_blank" class="btn btn-outline">Vedantu</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- /.row -->
+  </div> <!-- /.container -->
+</section>
+
+
+  <!-- ***** Video Courses Section: Grades 1-10 (India) — REAL VIDEOS ***** -->
+<section class="our-courses" id="videos">
+  <!-- ===== Search & Filter UI (place above Videos & Books sections) ===== -->
+<section class="search-filter-wrap" aria-label="Search and filter content">
+  <div class="container">
+    <div class="search-filter">
+      <label for="global-search" class="sr-only">Search classes and subjects</label>
+      <input id="global-search" type="search" placeholder="Search class (e.g. Class 10), subject (Math), or keywords..." aria-label="Search classes and subjects">
+
+      <label for="type-filter" class="sr-only">Filter type</label>
+      <select id="type-filter" aria-label="Filter by content type">
+        <option value="both">All (Videos & Books)</option>
+        <option value="videos">Videos only</option>
+        <option value="books">Books only</option>
+      </select>
+
+      <div id="result-count" aria-live="polite" class="result-count">Showing <strong>all</strong></div>
+    </div>
+  </div>
+</section>
+<!-- ===== End Search & Filter UI ===== -->
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="section-heading">
+          <h2>Video <em>Courses</em> for Std. <span>1–10</span></h2>
+          <p>Curated free lessons for Indian school students — basics, concepts and exam revision.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+
+      <!-- Grade 1 -->
+      <div class="col-lg-4 col-md-6">
+        <div class="course-card" role="article">
+          <div class="thumb">
+            <img loading="lazy" src="https://img.youtube.com/vi/60zbfRwSRCg/hqdefault.jpg" alt="Grade 1 - Counting (Khan Academy Kids)">
+            <div class="overlay">
+              <a href="https://www.youtube.com/watch?v=60zbfRwSRCg" target="_blank" rel="noopener noreferrer" class="play-btn" aria-label="Open Grade 1 Counting video in new tab">
+                <i class="fa fa-play" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+          <div class="down-content">
+            <h4>Std. 1 • Numbers & Counting</h4>
+            <p>Counting 1–10 with fun visuals and songs — beginner-friendly (Khan Academy Kids).</p>
+            <a href="https://www.youtube.com/watch?v=60zbfRwSRCg" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Watch Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade 2 -->
+      <div class="col-lg-4 col-md-6">
+        <div class="course-card" role="article">
+          <div class="thumb">
+            <img loading="lazy" src="https://img.youtube.com/vi/0MF9QOCrddQ/hqdefault.jpg" alt="Grade 2 - Letter A (Khan Academy Kids)">
+            <div class="overlay">
+              <a href="https://www.youtube.com/watch?v=0MF9QOCrddQ" target="_blank" rel="noopener noreferrer" class="play-btn" aria-label="Open Grade 2 English phonics video in new tab">
+                <i class="fa fa-play" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+          <div class="down-content">
+            <h4>Std. 2 • English & Phonics</h4>
+            <p>Phonics & letter-sound lessons to build reading basics (Khan Academy Kids).</p>
+            <a href="https://www.youtube.com/watch?v=0MF9QOCrddQ" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Watch Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade 3 -->
+      <div class="col-lg-4 col-md-6">
+        <div class="course-card" role="article">
+          <div class="thumb">
+            <img loading="lazy" src="https://img.youtube.com/vi/NWc9oYOW7jE/hqdefault.jpg" alt="Grade 3 - EVS (Our Wondrous World)">
+            <div class="overlay">
+              <a href="https://www.youtube.com/watch?v=NWc9oYOW7jE" target="_blank" rel="noopener noreferrer" class="play-btn" aria-label="Open Grade 3 EVS video in new tab">
+                <i class="fa fa-play" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+          <div class="down-content">
+            <h4>Std. 3 • EVS (Environmental Studies)</h4>
+            <p>Family, community and the world around us — NCERT-aligned EVS lessons.</p>
+            <a href="https://www.youtube.com/watch?v=NWc9oYOW7jE" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Watch Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade 4 -->
+      <div class="col-lg-4 col-md-6">
+        <div class="course-card" role="article">
+          <div class="thumb">
+            <img loading="lazy" src="https://img.youtube.com/vi/s2fR4MC-gkw/hqdefault.jpg" alt="Grade 4 - Fractions">
+            <div class="overlay">
+              <a href="https://www.youtube.com/watch?v=s2fR4MC-gkw" target="_blank" rel="noopener noreferrer" class="play-btn" aria-label="Open Grade 4 Fractions video in new tab">
+                <i class="fa fa-play" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+          <div class="down-content">
+            <h4>Std. 4 • Maths — Fractions</h4>
+            <p>Simple introduction to halves, quarters and common fractions with examples.</p>
+            <a href="https://www.youtube.com/watch?v=s2fR4MC-gkw" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Watch Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade 5 -->
+      <div class="col-lg-4 col-md-6">
+        <div class="course-card" role="article">
+          <div class="thumb">
+            <img loading="lazy" src="https://img.youtube.com/vi/17CHq38LmQM/hqdefault.jpg" alt="Grade 5 - Science concepts">
+            <div class="overlay">
+              <a href="https://www.youtube.com/watch?v=17CHq38LmQM" target="_blank" rel="noopener noreferrer" class="play-btn" aria-label="Open Grade 5 Science video in new tab">
+                <i class="fa fa-play" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+          <div class="down-content">
+            <h4>Std. 5 • Science • Basic Concepts</h4>
+            <p>States of matter, food and natural resources explained with simple demos.</p>
+            <a href="https://www.youtube.com/watch?v=17CHq38LmQM" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Watch Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade 6 -->
+      <div class="col-lg-4 col-md-6">
+        <div class="course-card" role="article">
+          <div class="thumb">
+            <img loading="lazy" src="https://img.youtube.com/vi/9XmWcycaLYg/hqdefault.jpg" alt="Class 6 - Knowing Our Numbers">
+            <div class="overlay">
+              <a href="https://www.youtube.com/watch?v=9XmWcycaLYg" target="_blank" rel="noopener noreferrer" class="play-btn" aria-label="Open Class 6 Maths video in new tab">
+                <i class="fa fa-play" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+          <div class="down-content">
+            <h4>Std. 6 • Maths — Knowing Our Numbers</h4>
+            <p>Whole numbers and number concepts—NCERT-focused lessons (Vedantu / math sprint).</p>
+            <a href="https://www.youtube.com/watch?v=9XmWcycaLYg" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Watch Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade 7 -->
+      <div class="col-lg-4 col-md-6">
+        <div class="course-card" role="article">
+          <div class="thumb">
+            <img loading="lazy" src="https://img.youtube.com/vi/BIp5m2WvtgM/hqdefault.jpg" alt="Class 7 - Nutrition in Plants">
+            <div class="overlay">
+              <a href="https://www.youtube.com/watch?v=BIp5m2WvtgM" target="_blank" rel="noopener noreferrer" class="play-btn" aria-label="Open Class 7 Science video in new tab">
+                <i class="fa fa-play" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+          <div class="down-content">
+            <h4>Std. 7 • Science — Systems & Life</h4>
+            <p>Biology basics, nutrition in plants & animals, light and heat topics (NCERT aligned).</p>
+            <a href="https://www.youtube.com/watch?v=BIp5m2WvtgM" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Watch Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade 8 -->
+      <div class="col-lg-4 col-md-6">
+        <div class="course-card" role="article">
+          <div class="thumb">
+            <img loading="lazy" src="https://img.youtube.com/vi/w95HxoKU-GE/hqdefault.jpg" alt="Class 8 - Algebraic Expressions">
+            <div class="overlay">
+              <a href="https://www.youtube.com/watch?v=w95HxoKU-GE" target="_blank" rel="noopener noreferrer" class="play-btn" aria-label="Open Class 8 Maths video in new tab">
+                <i class="fa fa-play" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+          <div class="down-content">
+            <h4>Std. 8 • Maths — Algebraic Expressions</h4>
+            <p>Learns algebra basics, expression formation and simple operations (NCERT practice).</p>
+            <a href="https://www.youtube.com/watch?v=w95HxoKU-GE" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Watch Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade 9 -->
+      <div class="col-lg-4 col-md-6">
+        <div class="course-card" role="article">
+          <div class="thumb">
+            <img loading="lazy" src="https://img.youtube.com/vi/jC6MW9KOQvU/hqdefault.jpg" alt="Class 9 - Motion (Physics)">
+            <div class="overlay">
+              <a href="https://www.youtube.com/watch?v=jC6MW9KOQvU" target="_blank" rel="noopener noreferrer" class="play-btn" aria-label="Open Class 9 Motion video in new tab">
+                <i class="fa fa-play" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+          <div class="down-content">
+            <h4>Std. 9 • Science — Motion & Force</h4>
+            <p>Complete chapter on motion (distance, displacement, speed, velocity, acceleration).</p>
+            <a href="https://www.youtube.com/watch?v=jC6MW9KOQvU" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Watch Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade 10 -->
+      <div class="col-lg-4 col-md-6">
+        <div class="course-card" role="article">
+          <div class="thumb">
+            <img loading="lazy" src="https://img.youtube.com/vi/VkcAiDhJAsY/hqdefault.jpg" alt="Class 10 - Complete Maths Revision (Alakh Pandey)">
+            <div class="overlay">
+              <a href="https://www.youtube.com/watch?v=VkcAiDhJAsY" target="_blank" rel="noopener noreferrer" class="play-btn" aria-label="Open Class 10 Complete Maths video in new tab">
+                <i class="fa fa-play" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+          <div class="down-content">
+            <h4>Std. 10 • Exam Prep — Complete Maths</h4>
+            <p>Full-syllabus revision and solved questions for board exams (one-shot revision video).</p>
+            <a href="https://www.youtube.com/watch?v=VkcAiDhJAsY" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Watch Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Extra: Math Tricks -->
+      <div class="col-lg-4 col-md-6">
+        <div class="course-card" role="article">
+          <div class="thumb">
+            <img loading="lazy" src="https://img.youtube.com/vi/n_QJDzZOZ9s/hqdefault.jpg" alt="Math Tricks & Shortcuts">
+            <div class="overlay">
+              <a href="https://www.youtube.com/watch?v=n_QJDzZOZ9s" target="_blank" rel="noopener noreferrer" class="play-btn" aria-label="Open Math Tricks video in new tab">
+                <i class="fa fa-play" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+          <div class="down-content">
+            <h4>Math Tricks • Speed & Shortcuts</h4>
+            <p>Vedic & mental math tricks to speed up calculations — great for all grades.</p>
+            <a href="https://www.youtube.com/watch?v=n_QJDzZOZ9s" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Watch Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Extra: Science Experiments -->
+      <div class="col-lg-4 col-md-6">
+        <div class="course-card" role="article">
+          <div class="thumb">
+            <img loading="lazy" src="https://img.youtube.com/vi/z-R3DShHbkA/hqdefault.jpg" alt="Easy Science Experiments at Home">
+            <div class="overlay">
+              <a href="https://www.youtube.com/watch?v=z-R3DShHbkA" target="_blank" rel="noopener noreferrer" class="play-btn" aria-label="Open Science Experiments video in new tab">
+                <i class="fa fa-play" aria-hidden="true"></i>
+              </a>
+            </div>
+          </div>
+          <div class="down-content">
+            <h4>Science Experiments • Hands-on</h4>
+            <p>Safe, easy science experiments kids can do at home — great for demonstrations.</p>
+            <a href="https://www.youtube.com/watch?v=z-R3DShHbkA" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Watch Now</a>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- /.row -->
+  </div> <!-- /.container -->
+</section>
+<!-- ***** End Video Courses Section ***** -->
+
+
+  <section class="our-facts">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="row">
+            <div class="col-lg-12">
+              <h2>Quality Education for all as everyone deserves same quality of education and oppurtunities.</h2>
+            </div>
+            <div class="col-lg-6">
+              <div class="row">
+                <div class="col-12">
+                  <div class="count-area-content percentage">
+                    <div class="count-digit">94</div>
+                    <div class="count-title">Succesed Students</div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="count-area-content">
+                    <div class="count-digit">126</div>
+                    <div class="count-title">Current Teachers</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="row">
+                <div class="col-12">
+                  <div class="count-area-content new-students">
+                    <div class="count-digit">2345</div>
+                    <div class="count-title">New Students</div>
+                  </div>
+                </div> 
+                <div class="col-12">
+                  <div class="count-area-content">
+                    <div class="count-digit">32</div>
+                    <div class="count-title">Awards</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> 
+        <div class="col-lg-6 align-self-center">
+          <div class="video">
+            <a href="https://www.youtube.com/watch?v=HndV87XpkWg" target="_blank"><img src="assets/images/play-icon.png" alt=""></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact-us" id="contact">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-9 align-self-center">
+          <div class="row">
+            <div class="col-lg-12">
+              <form id="contact" action="" method="post">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <h2>Let's get in touch</h2>
+                  </div>
+                  <div class="col-lg-4">
+                    <fieldset>
+                      <input name="name" type="text" id="name" placeholder="YOURNAME...*" required="">
+                    </fieldset>
+                  </div>
+                  <div class="col-lg-4">
+                    <fieldset>
+                    <input name="email" type="text" id="email" pattern="[^ @]*@[^ @]*" placeholder="YOUR EMAIL..." required="">
+                  </fieldset>
+                  </div>
+                  <div class="col-lg-4">
+                    <fieldset>
+                      <input name="subject" type="text" id="subject" placeholder="SUBJECT...*" required="">
+                    </fieldset>
+                  </div>
+                  <div class="col-lg-12">
+                    <fieldset>
+                      <textarea name="message" type="text" class="form-control" id="message" placeholder="YOUR MESSAGE..." required=""></textarea>
+                    </fieldset>
+                  </div>
+                  <div class="col-lg-12">
+                    <fieldset>
+                      <button type="submit" id="form-submit" class="button">SEND MESSAGE NOW</button>
+                    </fieldset>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="right-info">
+            <ul>
+              <li>
+                <h6>Phone Number</h6>
+                <span>9177548531</span>
+              </li>
+              <li>
+                <h6>Email Address</h6>
+                <span>rees.in</span>
+              </li>
+              <li>
+                <h6>Address</h6>
+                <span>Presidency University</span>
+              </li>
+              <li>
+                <h6>Website URL</h6>
+                <span>www.rees.edu</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <p>Presidency University 
+          <br></p>
+    </div>
+  </section>
+
+
+
+
+
+  <!-- Scripts -->
+  <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script src="assets/js/isotope.min.js"></script>
+    <script src="assets/js/owl-carousel.js"></script>
+    <script src="assets/js/lightbox.js"></script>
+    <script src="assets/js/tabs.js"></script>
+    <script src="assets/js/video.js"></script>
+    <script src="assets/js/slick-slider.js"></script>
+    <script src="assets/js/custom.js"></script>
+    <script>
+        //according to loftblog tut
+        $('.nav li:first').addClass('active');
+
+        var showSection = function showSection(section, isAnimate) {
+          var
+          direction = section.replace(/#/, ''),
+          reqSection = $('.section').filter('[data-section="' + direction + '"]'),
+          reqSectionPos = reqSection.offset().top - 0;
+
+          if (isAnimate) {
+            $('body, html').animate({
+              scrollTop: reqSectionPos },
+            800);
+          } else {
+            $('body, html').scrollTop(reqSectionPos);
+          }
+
+        };
+
+        var checkSection = function checkSection() {
+          $('.section').each(function () {
+            var
+            $this = $(this),
+            topEdge = $this.offset().top - 80,
+            bottomEdge = topEdge + $this.height(),
+            wScroll = $(window).scrollTop();
+            if (topEdge < wScroll && bottomEdge > wScroll) {
+              var
+              currentId = $this.data('section'),
+              reqLink = $('a').filter('[href*=\\#' + currentId + ']');
+              reqLink.closest('li').addClass('active').
+              siblings().removeClass('active');
+            }
+          });
+        };
+
+        $('.main-menu, .responsive-menu, .scroll-to-section').on('click', 'a', function (e) {
+          e.preventDefault();
+          showSection($(this).attr('href'), true);
+        });
+
+        $(window).scroll(function () {
+          checkSection();
+        });
+    </script>
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Fade-in on scroll (IntersectionObserver)
+  const cards = document.querySelectorAll('.course-card');
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('fade-in');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.18 });
+    cards.forEach(c => obs.observe(c));
+  } else {
+    // fallback: reveal all
+    cards.forEach(c => c.classList.add('fade-in'));
+  }
+
+  // Optional: click tracking stub (replace with your analytics endpoint)
+  document.querySelectorAll('.course-card a').forEach(a => {
+    a.addEventListener('click', () => {
+      // Example: send click data to your server
+      // navigator.sendBeacon('/api/track', JSON.stringify({href: a.href, ts: Date.now()}));
+      console.log('Video clicked:', a.href);
+    });
+  });
+});
+</script>
+<script>
+(function () {
+  // Create modal container (hidden)
+  const modal = document.createElement('div');
+  modal.className = 'video-modal';
+  modal.style.display = 'none';
+  modal.innerHTML = `
+    <div class="backdrop" tabindex="-1"></div>
+    <div class="player" role="dialog" aria-modal="true" aria-label="Video player">
+      <button class="close-btn" aria-label="Close video">Close</button>
+      <div class="iframe-wrap" style="width:100%;height:0;padding-bottom:56.25%;position:relative;"></div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  const backdrop = modal.querySelector('.backdrop');
+  const closeBtn = modal.querySelector('.close-btn');
+  const iframeWrap = modal.querySelector('.iframe-wrap');
+
+  function openPlayer(youtubeId) {
+    // Insert iframe lazily
+    const iframe = document.createElement('iframe');
+    iframe.setAttribute('src', `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1`);
+    iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture');
+    iframe.setAttribute('allowfullscreen', '');
+    iframe.style.position = 'absolute';
+    iframe.style.top = 0;
+    iframe.style.left = 0;
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+
+    iframeWrap.innerHTML = '';
+    iframeWrap.appendChild(iframe);
+
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePlayer() {
+    iframeWrap.innerHTML = '';
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  // Events
+  backdrop.addEventListener('click', closePlayer);
+  closeBtn.addEventListener('click', closePlayer);
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePlayer(); });
+
+  // Attach click handlers to cards/links with data-video attribute
+  // Example HTML for a card link: <a href="#" class="play-inline" data-video="dQw4w9WgXcQ">Play inline</a>
+  document.addEventListener('click', function (e) {
+    const target = e.target.closest('[data-video]');
+    if (!target) return;
+    e.preventDefault();
+    const vid = target.getAttribute('data-video');
+    if (vid) openPlayer(vid);
+  });
+})();
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const books = document.querySelectorAll('.book-card');
+
+  // ✅ 1. Fade-in animation on scroll (IntersectionObserver)
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('fade-in');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    books.forEach(card => observer.observe(card));
+  } else {
+    books.forEach(card => card.classList.add('fade-in'));
+  }
+
+  // ✅ 2. Simple click logging (optional analytics)
+  document.querySelectorAll('.book-card a').forEach(link => {
+    link.addEventListener('click', () => {
+      console.log('Book link clicked:', link.href);
+      // Example: send to backend if you want tracking
+      // navigator.sendBeacon('/api/track-book', JSON.stringify({ href: link.href, ts: Date.now() }));
+    });
+  });
+});
+</script>
+
+<script>
+(function(){
+  // Utility: debounce
+  function debounce(fn, wait=250){
+    let t;
+    return (...args) => { clearTimeout(t); t = setTimeout(()=>fn.apply(this,args), wait); };
+  }
+
+  // Find items
+  const videoCards = Array.from(document.querySelectorAll('.course-card'));
+  const bookCards = Array.from(document.querySelectorAll('.book-card'));
+  const allCards = videoCards.concat(bookCards);
+
+  // IntersectionObserver to reveal cards with shared animation
+  const observerOptions = { threshold: 0.12 };
+  const io = ('IntersectionObserver' in window) ? new IntersectionObserver((entries, observer) => {
+    entries.forEach(ent => {
+      if (ent.isIntersecting) {
+        ent.target.classList.add('visible');
+        observer.unobserve(ent.target);
+      }
+    });
+  }, observerOptions) : null;
+
+  // Initialize: add base class and observe
+  allCards.forEach(card => {
+    card.classList.add('fade-slide');
+    if (io) io.observe(card); else card.classList.add('visible'); // fallback
+  });
+
+  // Search/filter elements
+  const input = document.getElementById('global-search');
+  const typeSelect = document.getElementById('type-filter');
+  const resultCount = document.getElementById('result-count');
+
+  // normalize text
+  function norm(s){ return (s||'').toString().toLowerCase().trim(); }
+
+  // Returns true if card matches query (searchText includes class or title or desc)
+  function matches(card, q){
+    if (!q) return true;
+    const text = norm(card.innerText || card.textContent);
+    return text.indexOf(q) !== -1;
+  }
+
+  // Determine whether card is a video/book
+  function isVideo(card){ return card.classList.contains('course-card'); }
+  function isBook(card){ return card.classList.contains('book-card'); }
+
+  // Filter function
+  function applyFilter(){
+    const raw = norm(input && input.value ? input.value : '');
+    const type = typeSelect ? typeSelect.value : 'both';
+
+    let visibleCount = 0;
+
+    allCards.forEach(card => {
+      // type filter
+      if (type === 'videos' && !isVideo(card)) { card.style.display = 'none'; return; }
+      if (type === 'books' && !isBook(card)) { card.style.display = 'none'; return; }
+
+      // search filter
+      if (!matches(card, raw)) { card.style.display = 'none'; return; }
+
+      // show
+      card.style.display = '';
+      visibleCount++;
+    });
+
+    // Update result count
+    const total = (type === 'both') ? allCards.length : (type === 'videos' ? videoCards.length : bookCards.length);
+    const label = raw ? `Showing ${visibleCount} results` : `Showing ${visibleCount} of ${total}`;
+    resultCount.innerHTML = label;
+  }
+
+  // Debounced input listeners
+  const debouncedApply = debounce(applyFilter, 200);
+  if (input) input.addEventListener('input', debouncedApply);
+  if (typeSelect) typeSelect.addEventListener('change', applyFilter);
+
+  // Initial run
+  applyFilter();
+
+  // Keyboard accessibility: focus first visible card when pressing Enter on search
+  input && input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const first = allCards.find(c => (c.style.display !== 'none'));
+      if (first) {
+        // focus a link/button inside the card if exists
+        const focusable = first.querySelector('a, button, [tabindex]') || first;
+        focusable && focusable.focus();
+      }
+    }
+  });
+})();
+</script>
+<script>
+(()=>{
+const btn=document.getElementById('chatbot-btn'),modal=document.getElementById('chatbot-modal'),closeBtn=document.getElementById('close-chat'),messages=document.getElementById('chat-messages'),input=document.getElementById('chat-msg-input'),sendBtn=document.getElementById('send-chat-btn');
+function addMsg(txt,type){
+const d=document.createElement('div');
+d.className='chat-msg '+type;
+d.textContent=txt;
+messages.appendChild(d);
+messages.scrollTop=messages.scrollHeight;
+}
+async function send(){
+const msg=input.value.trim();
+if(!msg)return;
+addMsg(msg,'user');
+input.value='';
+addMsg('Thinking...','bot');
+try{
+const r=await fetch('http://localhost:3001/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg})});
+if(!r.ok)throw new Error('Server error');
+const d=await r.json();
+messages.removeChild(messages.lastChild);
+addMsg(d.reply||'Sorry, no response','bot');
+}catch(e){
+messages.removeChild(messages.lastChild);
+addMsg('⚠️ Server not running! Please start the server by running: npm start','bot');
+}
+}
+btn.onclick=()=>modal.classList.add('show');
+closeBtn.onclick=()=>modal.classList.remove('show');
+sendBtn.onclick=send;
+input.onkeypress=e=>{if(e.key==='Enter')send()};
+addMsg('Hi! Ask me about NCERT books, courses, or any educational topic.','bot');
+})();
+</script>
+
+<!-- <script>
+function openQuizPopup() {
+  window.open(
+    "quiz.html",
+    "QuizWindow",
+    "width=950,height=750,top=60,left=200,resizable=yes"
+  );
+}
+</script>
+
+<section id="dashboard" class="dashboard-section">
+  <div class="container">
+    <h2 class="section-title">My Learning <em>Dashboard</em></h2>
+    <p class="section-sub">See your quiz progress and performance summary.</p>
+
+    <div id="dash-anon" class="dash-card">
+      <p>We create an anonymous ID for your device to track your progress safely.</p>
+      <button id="dash-init-btn" class="btn btn-primary">Show My Dashboard</button>
+    </div>
+
+    <div id="dash-main" class="dash-grid" style="display:none;">
+      <div class="dash-card">
+        <h3>Total Quizzes</h3>
+        <p id="dash-total">0</p>
+      </div>
+      <div class="dash-card">
+        <h3>Average Score</h3>
+        <p id="dash-avg">0%</p>
+      </div>
+      <div class="dash-card">
+        <h3>Weakest Subject</h3>
+        <p id="dash-weak">—</p>
+      </div>
+      <div class="dash-card">
+        <h3>Last Attempt</h3>
+        <p id="dash-last">—</p>
+      </div>
+
+      <div class="dash-card dash-wide">
+        <h3>Subject-wise Performance</h3>
+        <ul id="dash-subject-list"></ul>
+      </div>
+
+      <div class="dash-card dash-wide">
+        <h3>Badges</h3>
+        <ul id="dash-badges"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  const anonBox = document.getElementById('dash-anon');
+  const mainBox = document.getElementById('dash-main');
+  const btn = document.getElementById('dash-init-btn');
+
+  function getUserId() {
+    let id = localStorage.getItem('quiz_user_id');
+    if (!id) {
+      id = 'u_' + Math.random().toString(36).slice(2);
+      localStorage.setItem('quiz_user_id', id);
+    }
+    return id;
+  }
+
+  async function loadDashboard() {
+    const userId = getUserId();
+    try {
+      const [sumRes, badgeRes] = await Promise.all([
+        fetch('/api/progress/summary?userId='+encodeURIComponent(userId)),
+        fetch('/api/badges?userId='+encodeURIComponent(userId))  // if you added badges API
+      ]);
+
+      if (!sumRes.ok) throw new Error('Summary HTTP '+sumRes.status);
+      if (!badgeRes.ok) throw new Error('Badges HTTP '+badgeRes.status);
+
+      const data = await sumRes.json();
+      const badgesData = await badgeRes.json();
+
+      anonBox.style.display = 'none';
+      mainBox.style.display = 'grid';
+
+      // main stats
+      document.getElementById('dash-total').textContent = data.totalQuizzes;
+      document.getElementById('dash-avg').textContent = data.totalQuizzes ? data.averageScore.toFixed(1) + '%' : '0%';
+      document.getElementById('dash-weak').textContent = data.weakestSubject
+        ? data.weakestSubject.subject + ' (' + data.weakestSubject.avgScore.toFixed(1) + '%)'
+        : '—';
+      document.getElementById('dash-last').textContent = data.lastAttempt
+        ? (data.lastAttempt.class + ' • ' + data.lastAttempt.subject + ' • ' + new Date(data.lastAttempt.date).toLocaleString())
+        : 'No quizzes attempted yet';
+
+      // subject-wise
+      const ulSub = document.getElementById('dash-subject-list');
+      ulSub.innerHTML = '';
+      (data.bySubject || []).forEach(s => {
+        const li = document.createElement('li');
+        li.textContent = `${s.subject}: ${s.avgScore.toFixed(1)}% over ${s.quizzes} quiz(es)`;
+        ulSub.appendChild(li);
+      });
+
+      // badges
+      const ulBadge = document.getElementById('dash-badges');
+      ulBadge.innerHTML = '';
+      if (!badgesData.badges || !badgesData.badges.length) {
+        const li = document.createElement('li');
+        li.textContent = 'No badges yet. Keep learning!';
+        ulBadge.appendChild(li);
+      } else {
+        badgesData.badges.forEach(b => {
+          const li = document.createElement('li');
+          li.innerHTML = `<span>${b.label}</span>${b.description}`;
+          ulBadge.appendChild(li);
+        });
+      }
+
+    } catch (e) {
+      console.warn('Dashboard load failed', e.message);
+    }
+  }
+
+  btn.addEventListener('click', loadDashboard);
+
+  // auto-load if user already exists
+  if (localStorage.getItem('quiz_user_id')) {
+    loadDashboard();
+  }
+})();
+</script> -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const elements = document.querySelectorAll(".fade-in");
+
+  function checkVisibility() {
+    const triggerBottom = window.innerHeight * 0.90;
+
+    elements.forEach(el => {
+      const rect = el.getBoundingClientRect().top;
+
+      if (rect < triggerBottom) {
+        el.classList.add("visible");
+      }
+    });
+  }
+
+  window.addEventListener("scroll", checkVisibility);
+  checkVisibility(); // run once
+});
+</script>
+
+
+
+<div id="scrollTopBtn" class="scroll-top-btn">↑</div>
+<script>
+  const scrollBtn = document.getElementById("scrollTopBtn");
+
+  // Show button when user scrolls down
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 300) {
+      scrollBtn.classList.add("show");
+    } else {
+      scrollBtn.classList.remove("show");
+    }
+  });
+
+  // Smooth scroll to top
+  scrollBtn.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+
+
+
+
+
+
+
+
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</body>
+</html>

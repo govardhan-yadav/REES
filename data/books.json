@@ -1,0 +1,30 @@
+[
+  {
+    "id": "class1",
+    "grade": "Class 1",
+    "title": "NCERT Class 1 Books",
+    "description": "English, Hindi and EVS textbooks in PDF",
+    "link": "https://ncert.nic.in/textbook.php"
+  },
+  {
+    "id": "class6",
+    "grade": "Class 6",
+    "title": "NCERT Class 6 Books",
+    "description": "Maths, Science and SST links",
+    "link": "https://ncert.nic.in/textbook.php"
+  },
+  {
+    "id": "class8",
+    "grade": "Class 8",
+    "title": "NCERT Class 8 Books",
+    "description": "All subjects in PDF format",
+    "link": "https://ncert.nic.in/textbook.php"
+  },
+  {
+    "id": "class10",
+    "grade": "Class 10",
+    "title": "NCERT Class 10 Books",
+    "description": "Board subjects complete set",
+    "link": "https://ncert.nic.in/textbook.php"
+  }
+]

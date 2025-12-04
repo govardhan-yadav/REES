@@ -1,0 +1,47 @@
+========================================
+   HOW TO START THE CHATBOT SERVER
+========================================
+
+STEP 1: Open Command Prompt (CMD)
+   - Press Windows + R
+   - Type: cmd
+   - Press Enter
+
+STEP 2: Navigate to project folder
+   - Type: cd "c:\CAPSTONE\Capstone PSCS-32\FINAL\PSCS 32"
+   - Press Enter
+
+STEP 3: Start the server
+   - Type: npm start
+   - Press Enter
+
+STEP 4: Wait for message
+   - You should see: "Server running on port 3001"
+
+STEP 5: Open your website
+   - Open index.html in your browser
+   - Click the chat button (💬) in bottom-right corner
+   - Start chatting!
+
+========================================
+   ALTERNATIVE: Use the Batch File
+========================================
+
+Just double-click: start-server.bat
+
+========================================
+   TROUBLESHOOTING
+========================================
+
+If you see "npm not found":
+   - Install Node.js from: https://nodejs.org
+
+If you see "Error connecting to server":
+   - Make sure the server is running (Step 3)
+   - Check if you see "Server running on port 3001"
+
+If chatbot doesn't respond:
+   - Check your Gemini API key in .env file
+   - Make sure it's valid
+
+========================================

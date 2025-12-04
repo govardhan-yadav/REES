@@ -1,0 +1,94 @@
+[
+  {
+    "id": "q_1764223922617",
+    "className": "Class 2",
+    "subject": "maths",
+    "chapter": "fractions",
+    "difficulty": "easy",
+    "questions": [
+      {
+        "id": 1764223881284.849,
+        "q": "what is fraction",
+        "options": [
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "answerIndex": 0,
+        "explanation": "na"
+      }
+    ],
+    "createdBy": "varun@gmail.com",
+    "createdAt": "2025-11-27T06:12:02.617Z"
+  },
+  {
+    "id": "q_1764230986128",
+    "className": "Class 1",
+    "subject": "MATHS",
+    "chapter": "NUMBER SYSTEM",
+    "difficulty": "easy",
+    "questions": [
+      {
+        "id": 1764230939432.817,
+        "q": "1+1=?",
+        "options": [
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "answerIndex": 1,
+        "explanation": ""
+      }
+    ],
+    "createdBy": "varun@gmail.com",
+    "createdAt": "2025-11-27T08:09:46.128Z"
+  },
+  {
+    "id": "q_1764517590064",
+    "className": "Class 1",
+    "subject": "Maths",
+    "chapter": "Numbers",
+    "difficulty": "easy",
+    "questions": [
+      {
+        "id": 1764517566552.1353,
+        "q": "1+1=?",
+        "options": [
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "answerIndex": 0,
+        "explanation": ""
+      }
+    ],
+    "createdBy": "varun@gmail.com",
+    "createdAt": "2025-11-30T15:46:30.064Z"
+  },
+  {
+    "id": "q_1764519211438",
+    "className": "Class 2",
+    "subject": "Maths",
+    "chapter": "Numbers",
+    "difficulty": "easy",
+    "questions": [
+      {
+        "id": 1764519186633.0776,
+        "q": "1+1=?",
+        "options": [
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "answerIndex": 0,
+        "explanation": ""
+      }
+    ],
+    "createdBy": "varun@gmail.com",
+    "createdAt": "2025-11-30T16:13:31.438Z"
+  }
+]

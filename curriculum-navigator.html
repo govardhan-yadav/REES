@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Curriculum Navigator - REES</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); overflow: hidden; }
+        
+        .container { display: flex; height: 100vh; }
+        
+        .sidebar { width: 300px; background: #fff; padding: 20px; overflow-y: auto; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
+        .sidebar h1 { color: #667eea; font-size: 24px; margin-bottom: 20px; }
+        .sidebar select { width: 100%; padding: 10px; margin-bottom: 15px; border: 2px solid #ddd; border-radius: 5px; font-size: 14px; }
+        .sidebar button { width: 100%; padding: 12px; background: #667eea; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-bottom: 10px; }
+        .sidebar button:hover { background: #5568d3; }
+        
+        .legend { margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px; }
+        .legend h3 { font-size: 14px; margin-bottom: 10px; color: #333; }
+        .legend-item { display: flex; align-items: center; margin: 8px 0; font-size: 13px; }
+        .legend-circle { width: 16px; height: 16px; border-radius: 50%; margin-right: 8px; }
+        
+        .graph-container { flex: 1; position: relative; }
+        
+        #graph { width: 100%; height: 100%; }
+        
+        .node { cursor: pointer; transition: all 0.3s; }
+        .node circle { stroke: #fff; stroke-width: 3px; }
+        .node:hover circle { stroke-width: 5px; transform: scale(1.1); }
+        
+        .node text { font-size: 12px; font-weight: 600; pointer-events: none; text-anchor: middle; fill: #333; }
+        
+        .link { stroke: #999; stroke-opacity: 0.6; stroke-width: 2px; fill: none; marker-end: url(#arrow); }
+        
+        .node.completed circle { fill: #27ae60; }
+        .node.in-progress circle { fill: #f39c12; }
+        .node.locked circle { fill: #95a5a6; }
+        .node.available circle { fill: #3498db; }
+        
+        .tooltip { position: absolute; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); pointer-events: none; opacity: 0; transition: opacity 0.3s; z-index: 1000; max-width: 300px; }
+        .tooltip.show { opacity: 1; }
+        .tooltip h3 { color: #667eea; margin-bottom: 8px; font-size: 16px; }
+        .tooltip p { color: #666; font-size: 13px; margin: 5px 0; }
+        .tooltip .resources { margin-top: 10px; }
+        .tooltip .resource-btn { display: inline-block; padding: 6px 12px; background: #667eea; color: #fff; text-decoration: none; border-radius: 4px; font-size: 12px; margin: 4px 4px 0 0; }
+        .tooltip .resource-btn:hover { background: #5568d3; }
+        
+        .controls { position: absolute; top: 20px; right: 20px; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .controls button { padding: 8px 15px; margin: 0 5px; background: #667eea; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+        .controls button:hover { background: #5568d3; }
+        
+        .stats { position: absolute; bottom: 20px; left: 320px; background: rgba(255,255,255,0.95); padding: 15px 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .stats-item { display: inline-block; margin-right: 20px; font-size: 14px; }
+        .stats-item strong { color: #667eea; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h1>📚 Curriculum Navigator</h1>
+            
+            <label style="display:block;margin-bottom:5px;font-weight:600;color:#333">Class</label>
+            <select id="classSelect">
+                <option value="6">Class 6</option>
+                <option value="7">Class 7</option>
+                <option value="8">Class 8</option>
+            </select>
+            
+            <label style="display:block;margin-bottom:5px;font-weight:600;color:#333">Subject</label>
+            <select id="subjectSelect">
+                <option value="Math">Mathematics</option>
+                <option value="Science">Science</option>
+                <option value="English">English</option>
+            </select>
+            
+            <button onclick="loadCurriculum()">Load Curriculum</button>
+            <button onclick="resetProgress()" style="background:#6c757d">Reset Progress</button>
+            
+            <div class="legend">
+                <h3>📊 Chapter Status</h3>
+                <div class="legend-item">
+                    <div class="legend-circle" style="background:#27ae60"></div>
+                    <span>Completed</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-circle" style="background:#f39c12"></div>
+                    <span>In Progress</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-circle" style="background:#3498db"></div>
+                    <span>Available</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-circle" style="background:#95a5a6"></div>
+                    <span>Locked</span>
+                </div>
+            </div>
+            
+            <div style="margin-top:20px;padding:15px;background:#e8eaf6;border-radius:8px">
+                <h3 style="font-size:14px;margin-bottom:8px;color:#667eea">💡 How to Use</h3>
+                <p style="font-size:12px;color:#666;line-height:1.6">
+                    • Click nodes to view chapter details<br>
+                    • Follow arrows for progression<br>
+                    • Access resources directly<br>
+                    • Track your progress
+                </p>
+            </div>
+        </div>
+        
+        <div class="graph-container">
+            <svg id="graph"></svg>
+            
+            <div class="controls">
+                <button onclick="zoomIn()">🔍 +</button>
+                <button onclick="zoomOut()">🔍 −</button>
+                <button onclick="resetZoom()">⟲ Reset</button>
+            </div>
+            
+            <div class="stats">
+                <div class="stats-item">
+                    <strong id="completedCount">0</strong> Completed
+                </div>
+                <div class="stats-item">
+                    <strong id="progressCount">0</strong> In Progress
+                </div>
+                <div class="stats-item">
+                    <strong id="totalCount">0</strong> Total Chapters
+                </div>
+            </div>
+            
+            <div class="tooltip" id="tooltip"></div>
+        </div>
+    </div>
+
+    <script>
+        // Curriculum data structure
+        const CURRICULUM_DATA = {
+            6: {
+                Math: [
+                    { id: 'm6_1', name: 'Whole Numbers', prereq: [], resources: ['Video', 'Quiz', 'Notes'] },
+                    { id: 'm6_2', name: 'Integers', prereq: ['m6_1'], resources: ['Video', 'Quiz', 'Practice'] },
+                    { id: 'm6_3', name: 'Fractions', prereq: ['m6_1'], resources: ['Video', 'Quiz', 'Notes'] },
+                    { id: 'm6_4', name: 'Decimals', prereq: ['m6_3'], resources: ['Video', 'Quiz', 'Practice'] },
+                    { id: 'm6_5', name: 'Algebra Basics', prereq: ['m6_2'], resources: ['Video', 'Quiz', 'Notes'] },
+                    { id: 'm6_6', name: 'Ratio & Proportion', prereq: ['m6_3'], resources: ['Video', 'Quiz'] },
+                    { id: 'm6_7', name: 'Geometry', prereq: ['m6_1'], resources: ['Video', 'Quiz', 'Notes'] },
+                    { id: 'm6_8', name: 'Mensuration', prereq: ['m6_7'], resources: ['Video', 'Quiz'] }
+                ],
+                Science: [
+                    { id: 's6_1', name: 'Food & Nutrition', prereq: [], resources: ['Video', 'Quiz', 'Notes'] },
+                    { id: 's6_2', name: 'Materials', prereq: [], resources: ['Video', 'Quiz'] },
+                    { id: 's6_3', name: 'Living Organisms', prereq: ['s6_1'], resources: ['Video', 'Quiz', 'Practice'] },
+                    { id: 's6_4', name: 'Motion', prereq: [], resources: ['Video', 'Quiz', 'Notes'] },
+                    { id: 's6_5', name: 'Light & Shadows', prereq: ['s6_4'], resources: ['Video', 'Quiz'] },
+                    { id: 's6_6', name: 'Electricity', prereq: ['s6_4'], resources: ['Video', 'Quiz', 'Practice'] }
+                ],
+                English: [
+                    { id: 'e6_1', name: 'Grammar Basics', prereq: [], resources: ['Video', 'Quiz', 'Notes'] },
+                    { id: 'e6_2', name: 'Sentence Structure', prereq: ['e6_1'], resources: ['Video', 'Quiz'] },
+                    { id: 'e6_3', name: 'Reading Skills', prereq: [], resources: ['Video', 'Practice'] },
+                    { id: 'e6_4', name: 'Writing Skills', prereq: ['e6_2'], resources: ['Video', 'Quiz', 'Notes'] },
+                    { id: 'e6_5', name: 'Poetry', prereq: ['e6_3'], resources: ['Video', 'Quiz'] }
+                ]
+            },
+            7: {
+                Math: [
+                    { id: 'm7_1', name: 'Rational Numbers', prereq: [], resources: ['Video', 'Quiz', 'Notes'] },
+                    { id: 'm7_2', name: 'Linear Equations', prereq: ['m7_1'], resources: ['Video', 'Quiz', 'Practice'] },
+                    { id: 'm7_3', name: 'Geometry', prereq: [], resources: ['Video', 'Quiz'] },
+                    { id: 'm7_4', name: 'Perimeter & Area', prereq: ['m7_3'], resources: ['Video', 'Quiz', 'Notes'] },
+                    { id: 'm7_5', name: 'Data Handling', prereq: [], resources: ['Video', 'Quiz'] }
+                ],
+                Science: [
+                    { id: 's7_1', name: 'Nutrition in Plants', prereq: [], resources: ['Video', 'Quiz', 'Notes'] },
+                    { id: 's7_2', name: 'Heat', prereq: [], resources: ['Video', 'Quiz'] },
+                    { id: 's7_3', name: 'Acids & Bases', prereq: [], resources: ['Video', 'Quiz', 'Practice'] },
+                    { id: 's7_4', name: 'Weather', prereq: ['s7_2'], resources: ['Video', 'Quiz'] }
+                ],
+                English: [
+                    { id: 'e7_1', name: 'Advanced Grammar', prereq: [], resources: ['Video', 'Quiz', 'Notes'] },
+                    { id: 'e7_2', name: 'Essay Writing', prereq: ['e7_1'], resources: ['Video', 'Practice'] },
+                    { id: 'e7_3', name: 'Literature', prereq: [], resources: ['Video', 'Quiz'] }
+                ]
+            },
+            8: {
+                Math: [
+                    { id: 'm8_1', name: 'Exponents', prereq: [], resources: ['Video', 'Quiz', 'Notes'] },
+                    { id: 'm8_2', name: 'Algebraic Expressions', prereq: ['m8_1'], resources: ['Video', 'Quiz', 'Practice'] },
+                    { id: 'm8_3', name: 'Quadrilaterals', prereq: [], resources: ['Video', 'Quiz'] },
+                    { id: 'm8_4', name: 'Mensuration', prereq: ['m8_3'], resources: ['Video', 'Quiz', 'Notes'] }
+                ],
+                Science: [
+                    { id: 's8_1', name: 'Crop Production', prereq: [], resources: ['Video', 'Quiz', 'Notes'] },
+                    { id: 's8_2', name: 'Force & Pressure', prereq: [], resources: ['Video', 'Quiz'] },
+                    { id: 's8_3', name: 'Chemical Reactions', prereq: [], resources: ['Video', 'Quiz', 'Practice'] }
+                ],
+                English: [
+                    { id: 'e8_1', name: 'Complex Grammar', prereq: [], resources: ['Video', 'Quiz', 'Notes'] },
+                    { id: 'e8_2', name: 'Formal Writing', prereq: ['e8_1'], resources: ['Video', 'Practice'] }
+                ]
+            }
+        };
+
+        let svg, g, simulation, zoom;
+        let currentData = { nodes: [], links: [] };
+        let userProgress = JSON.parse(localStorage.getItem('curriculum_progress') || '{}');
+
+        // Initialize
+        function init() {
+            const width = window.innerWidth - 300;
+            const height = window.innerHeight;
+
+            svg = d3.select('#graph')
+                .attr('width', width)
+                .attr('height', height);
+
+            // Define arrow marker
+            svg.append('defs').append('marker')
+                .attr('id', 'arrow')
+                .attr('viewBox', '0 -5 10 10')
+                .attr('refX', 25)
+                .attr('refY', 0)
+                .attr('markerWidth', 6)
+                .attr('markerHeight', 6)
+                .attr('orient', 'auto')
+                .append('path')
+                .attr('d', 'M0,-5L10,0L0,5')
+                .attr('fill', '#999');
+
+            g = svg.append('g');
+
+            // Zoom behavior
+            zoom = d3.zoom()
+                .scaleExtent([0.3, 3])
+                .on('zoom', (event) => {
+                    g.attr('transform', event.transform);
+                });
+
+            svg.call(zoom);
+
+            loadCurriculum();
+        }
+
+        // Load curriculum graph
+        function loadCurriculum() {
+            const classLevel = document.getElementById('classSelect').value;
+            const subject = document.getElementById('subjectSelect').value;
+
+            const chapters = CURRICULUM_DATA[classLevel][subject];
+            
+            // Create nodes
+            const nodes = chapters.map(ch => ({
+                id: ch.id,
+                name: ch.name,
+                resources: ch.resources,
+                status: getChapterStatus(ch.id, ch.prereq)
+            }));
+
+            // Create links
+            const links = [];
+            chapters.forEach(ch => {
+                ch.prereq.forEach(prereqId => {
+                    links.push({ source: prereqId, target: ch.id });
+                });
+            });
+
+            currentData = { nodes, links };
+            renderGraph();
+            updateStats();
+        }
+
+        // Get chapter status
+        function getChapterStatus(id, prereq) {
+            if (userProgress[id] === 'completed') return 'completed';
+            if (userProgress[id] === 'in-progress') return 'in-progress';
+            
+            // Check if prerequisites are met
+            const prereqMet = prereq.every(p => userProgress[p] === 'completed');
+            return prereqMet ? 'available' : 'locked';
+        }
+
+        // Render graph
+        function renderGraph() {
+            g.selectAll('*').remove();
+
+            const width = window.innerWidth - 300;
+            const height = window.innerHeight;
+
+            // Force simulation
+            simulation = d3.forceSimulation(currentData.nodes)
+                .force('link', d3.forceLink(currentData.links).id(d => d.id).distance(150))
+                .force('charge', d3.forceManyBody().strength(-500))
+                .force('center', d3.forceCenter(width / 2, height / 2))
+                .force('collision', d3.forceCollide().radius(50));
+
+            // Links
+            const link = g.append('g')
+                .selectAll('path')
+                .data(currentData.links)
+                .join('path')
+                .attr('class', 'link');
+
+            // Nodes
+            const node = g.append('g')
+                .selectAll('g')
+                .data(currentData.nodes)
+                .join('g')
+                .attr('class', d => `node ${d.status}`)
+                .call(drag(simulation))
+                .on('click', showTooltip)
+                .on('mouseout', hideTooltip);
+
+            node.append('circle')
+                .attr('r', 20);
+
+            node.append('text')
+                .attr('dy', 35)
+                .text(d => d.name);
+
+            // Update positions
+            simulation.on('tick', () => {
+                link.attr('d', d => {
+                    const dx = d.target.x - d.source.x;
+                    const dy = d.target.y - d.source.y;
+                    const dr = Math.sqrt(dx * dx + dy * dy);
+                    return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
+                });
+
+                node.attr('transform', d => `translate(${d.x},${d.y})`);
+            });
+        }
+
+        // Drag behavior
+        function drag(simulation) {
+            function dragstarted(event) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                event.subject.fx = event.subject.x;
+                event.subject.fy = event.subject.y;
+            }
+
+            function dragged(event) {
+                event.subject.fx = event.x;
+                event.subject.fy = event.y;
+            }
+
+            function dragended(event) {
+                if (!event.active) simulation.alphaTarget(0);
+                event.subject.fx = null;
+                event.subject.fy = null;
+            }
+
+            return d3.drag()
+                .on('start', dragstarted)
+                .on('drag', dragged)
+                .on('end', dragended);
+        }
+
+        // Show tooltip
+        function showTooltip(event, d) {
+            const tooltip = document.getElementById('tooltip');
+            
+            let html = `
+                <h3>${d.name}</h3>
+                <p><strong>Status:</strong> ${d.status.replace('-', ' ').toUpperCase()}</p>
+                <div class="resources">
+                    <strong>Resources:</strong><br>
+            `;
+
+            d.resources.forEach(res => {
+                html += `<a href="#" class="resource-btn" onclick="openResource('${d.id}','${res}'); return false;">${res}</a>`;
+            });
+
+            html += `</div>`;
+
+            if (d.status !== 'locked') {
+                html += `<div style="margin-top:10px">
+                    <a href="#" class="resource-btn" style="background:#27ae60" onclick="markCompleted('${d.id}'); return false;">✓ Mark Complete</a>
+                    <a href="#" class="resource-btn" style="background:#f39c12" onclick="markInProgress('${d.id}'); return false;">⏳ In Progress</a>
+                </div>`;
+            }
+
+            tooltip.innerHTML = html;
+            tooltip.style.left = (event.pageX + 10) + 'px';
+            tooltip.style.top = (event.pageY + 10) + 'px';
+            tooltip.classList.add('show');
+        }
+
+        // Hide tooltip
+        function hideTooltip() {
+            setTimeout(() => {
+                document.getElementById('tooltip').classList.remove('show');
+            }, 200);
+        }
+
+        // Mark chapter as completed
+        function markCompleted(id) {
+            userProgress[id] = 'completed';
+            localStorage.setItem('curriculum_progress', JSON.stringify(userProgress));
+            loadCurriculum();
+        }
+
+        // Mark chapter as in progress
+        function markInProgress(id) {
+            userProgress[id] = 'in-progress';
+            localStorage.setItem('curriculum_progress', JSON.stringify(userProgress));
+            loadCurriculum();
+        }
+
+        // Open resource
+        function openResource(chapterId, resourceType) {
+            alert(`Opening ${resourceType} for chapter: ${chapterId}\n\nThis would link to actual resources in production.`);
+        }
+
+        // Reset progress
+        function resetProgress() {
+            if (confirm('Reset all progress? This cannot be undone.')) {
+                userProgress = {};
+                localStorage.removeItem('curriculum_progress');
+                loadCurriculum();
+            }
+        }
+
+        // Update stats
+        function updateStats() {
+            const completed = currentData.nodes.filter(n => n.status === 'completed').length;
+            const inProgress = currentData.nodes.filter(n => n.status === 'in-progress').length;
+            const total = currentData.nodes.length;
+
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('progressCount').textContent = inProgress;
+            document.getElementById('totalCount').textContent = total;
+        }
+
+        // Zoom controls
+        function zoomIn() {
+            svg.transition().call(zoom.scaleBy, 1.3);
+        }
+
+        function zoomOut() {
+            svg.transition().call(zoom.scaleBy, 0.7);
+        }
+
+        function resetZoom() {
+            svg.transition().call(zoom.transform, d3.zoomIdentity);
+        }
+
+        // Initialize on load
+        window.addEventListener('load', init);
+        window.addEventListener('resize', loadCurriculum);
+    </script>
+</body>
+</html>

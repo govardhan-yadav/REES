@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Path Generator - Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        h1 { color: #667eea; margin-bottom: 10px; }
+        .subtitle { color: #666; margin-bottom: 30px; }
+        .input-section { background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 30px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; color: #333; }
+        select, textarea { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 14px; }
+        textarea { min-height: 100px; font-family: monospace; }
+        button { background: #667eea; color: white; padding: 12px 30px; border: none; border-radius: 5px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #5568d3; transform: translateY(-2px); }
+        .output-section { display: none; }
+        .progress-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .progress-bar { background: rgba(255,255,255,0.3); height: 30px; border-radius: 15px; overflow: hidden; margin-top: 10px; }
+        .progress-fill { background: white; height: 100%; transition: width 0.5s; display: flex; align-items: center; justify-content: center; color: #667eea; font-weight: 600; }
+        .subject-card { background: white; border: 2px solid #e0e0e0; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+        .subject-title { color: #667eea; font-size: 20px; font-weight: 600; margin-bottom: 15px; }
+        .topic-item { background: #f8f9fa; padding: 15px; border-left: 4px solid #667eea; margin-bottom: 10px; border-radius: 5px; }
+        .topic-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .topic-name { font-weight: 600; color: #333; }
+        .difficulty-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .difficulty-easy { background: #d4edda; color: #155724; }
+        .difficulty-medium { background: #fff3cd; color: #856404; }
+        .difficulty-hard { background: #f8d7da; color: #721c24; }
+        .topic-reason { color: #666; font-size: 14px; margin-bottom: 8px; }
+        .actions { display: flex; gap: 10px; }
+        .action-btn { padding: 6px 12px; border-radius: 5px; font-size: 12px; border: 1px solid #667eea; color: #667eea; background: white; cursor: pointer; }
+        .summary-card { background: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; border-radius: 5px; margin-top: 20px; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; }
+        .stat-value { font-size: 32px; font-weight: 700; color: #667eea; }
+        .stat-label { color: #666; font-size: 14px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Personalized Learning Path Generator</h1>
+        <p class="subtitle">AI-powered recommendations based on your performance</p>
+
+        <div class="input-section">
+            <div class="form-group">
+                <label>Class Level:</label>
+                <select id="classLevel">
+                    <option value="6">Class 6</option>
+                    <option value="7">Class 7</option>
+                    <option value="8">Class 8</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Quiz Scores (JSON Array):</label>
+                <textarea id="quizScores">[
+  {"subject": "Math", "chapter": "Whole Numbers", "score": 85, "correct": 17, "total": 20},
+  {"subject": "Math", "chapter": "Integers", "score": 45, "correct": 9, "total": 20},
+  {"subject": "Science", "chapter": "Food and Nutrition", "score": 90, "correct": 18, "total": 20},
+  {"subject": "English", "chapter": "Grammar Fundamentals", "score": 75, "correct": 15, "total": 20}
+]</textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Watched Videos (JSON Array):</label>
+                <textarea id="watchedVideos">[
+  {"videoId": "v1", "topic": "Whole Numbers", "watched": true},
+  {"videoId": "v2", "topic": "Food and Nutrition", "watched": true}
+]</textarea>
+            </div>
+
+            <button onclick="generatePath()">Generate Learning Path</button>
+        </div>
+
+        <div class="output-section" id="output">
+            <div class="progress-card">
+                <h2>📊 Overall Progress</h2>
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="completedTopics">0</div>
+                        <div class="stat-label">Completed Topics</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="progressPercent">0%</div>
+                        <div class="stat-label">Progress</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="weakTopics">0</div>
+                        <div class="stat-label">Weak Topics</div>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%">0%</div>
+                </div>
+            </div>
+
+            <div id="recommendations"></div>
+
+            <div class="summary-card">
+                <h3>💡 Recommendation</h3>
+                <p id="summaryText"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="learning-path-engine.js"></script>
+    <script>
+        function generatePath() {
+            try {
+                const classLevel = parseInt(document.getElementById('classLevel').value);
+                const quizScores = JSON.parse(document.getElementById('quizScores').value);
+                const watchedVideos = JSON.parse(document.getElementById('watchedVideos').value);
+
+                const result = generateLearningPath(quizScores, watchedVideos, classLevel);
+
+                if (result.error) {
+                    alert(result.error);
+                    return;
+                }
+
+                // Update progress
+                document.getElementById('completedTopics').textContent = `${result.progress.completed}/${result.progress.total}`;
+                document.getElementById('progressPercent').textContent = `${result.progress.percentage}%`;
+                document.getElementById('weakTopics').textContent = result.performance.weakTopicsCount;
+                document.getElementById('progressBar').style.width = `${result.progress.percentage}%`;
+                document.getElementById('progressBar').textContent = `${result.progress.percentage}%`;
+
+                // Generate recommendations
+                let html = '';
+                for (const [subject, recommendations] of Object.entries(result.learningPath)) {
+                    html += `<div class="subject-card">
+                        <div class="subject-title">${subject}</div>`;
+                    
+                    recommendations.forEach((rec, index) => {
+                        const difficultyClass = `difficulty-${rec.difficultyLabel.toLowerCase()}`;
+                        html += `<div class="topic-item">
+                            <div class="topic-header">
+                                <span class="topic-name">${index + 1}. ${rec.topic}</span>
+                                <span class="difficulty-badge ${difficultyClass}">${rec.difficultyLabel}</span>
+                            </div>
+                            <div class="topic-reason">📌 ${rec.reason}</div>
+                            <div class="actions">
+                                ${rec.actions.map(a => `<button class="action-btn">${a.label}</button>`).join('')}
+                            </div>
+                        </div>`;
+                    });
+                    
+                    html += '</div>';
+                }
+                document.getElementById('recommendations').innerHTML = html;
+
+                // Update summary
+                document.getElementById('summaryText').textContent = result.summary.recommendation;
+
+                // Show output
+                document.getElementById('output').style.display = 'block';
+                document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

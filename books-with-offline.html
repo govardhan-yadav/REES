@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCERT Books - Save Offline</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #fff; text-align: center; margin-bottom: 10px; }
+        .subtitle { color: #fff; text-align: center; margin-bottom: 30px; opacity: 0.9; }
+        .header-actions { text-align: center; margin-bottom: 30px; }
+        .btn { padding: 12px 24px; background: #fff; color: #667eea; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-block; margin: 0 5px; font-weight: 600; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .book-card { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.3s; }
+        .book-card:hover { transform: translateY(-5px); }
+        .book-icon { font-size: 64px; text-align: center; margin-bottom: 15px; }
+        .book-title { font-size: 18px; font-weight: 600; color: #333; margin-bottom: 8px; }
+        .book-meta { font-size: 14px; color: #666; margin-bottom: 15px; }
+        .book-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn-download { background: #3498db; color: #fff; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-block; }
+        .btn-download:hover { background: #2980b9; }
+        @media (max-width: 768px) {
+            .books-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 NCERT Books Library</h1>
+        <p class="subtitle">Download and save books for offline access</p>
+        
+        <div class="header-actions">
+            <a href="offline-library.html" class="btn">📖 My Offline Library</a>
+            <a href="index.html" class="btn">← Back to Home</a>
+        </div>
+
+        <div class="books-grid" id="booksGrid"></div>
+    </div>
+
+    <script src="offline-storage.js"></script>
+    <script>
+        // Sample NCERT books data
+        const books = [
+            {
+                id: 'ncert_math_6',
+                title: 'Mathematics Class 6',
+                subject: 'Mathematics',
+                class: 'Class 6',
+                type: 'book',
+                url: 'https://drive.google.com/uc?export=download&id=1BMBUe28a0Fy0S7gzAe9A2K_Yl6FU64df'
+            },
+            {
+                id: 'ncert_science_6',
+                title: 'Science Class 6',
+                subject: 'Science',
+                class: 'Class 6',
+                type: 'book',
+                url: 'https://drive.google.com/uc?export=download&id=1_NA-zRm6BXcI8Q45UJmQ0o1NGBQkFQF8'
+            },
+            {
+                id: 'ncert_english_6',
+                title: 'English Class 6',
+                subject: 'English',
+                class: 'Class 6',
+                type: 'book',
+                url: 'https://drive.google.com/uc?export=download&id=15gHo3X1XZN3TVJ74he1o0nmBXvPhxCj6'
+            },
+            {
+                id: 'ncert_math_7',
+                title: 'Mathematics Class 7',
+                subject: 'Mathematics',
+                class: 'Class 7',
+                type: 'book',
+                url: 'https://drive.google.com/uc?export=download&id=1M3T2fGLETRd9noFzbI5jCFmifo0LxFN0'
+            },
+            {
+                id: 'ncert_science_7',
+                title: 'Science Class 7',
+                subject: 'Science',
+                class: 'Class 7',
+                type: 'book',
+                url: 'https://drive.google.com/uc?export=download&id=1__q3kYulG3lxv9TFiqfcFLcRHCfZ4-WS'
+            },
+            {
+                id: 'ncert_python',
+                title: 'Python Programming',
+                subject: 'Computer Science',
+                class: 'Class 11-12',
+                type: 'book',
+                url: 'https://drive.google.com/uc?export=download&id=1rz5v5bBUjrb4FVmdOGN9IidOjNXdxpZx'
+            },
+            {
+                id: 'ncert_cpp',
+                title: 'C++ Programming',
+                subject: 'Computer Science',
+                class: 'Class 11-12',
+                type: 'book',
+                url: 'https://drive.google.com/uc?export=download&id=15gHo3X1XZN3TVJ74he1o0nmBXvPhxCj6'
+            },
+            {
+                id: 'ncert_java',
+                title: 'Java Programming',
+                subject: 'Computer Science',
+                class: 'Class 11-12',
+                type: 'book',
+                url: 'https://drive.google.com/uc?export=download&id=1__q3kYulG3lxv9TFiqfcFLcRHCfZ4-WS'
+            }
+        ];
+
+        function renderBooks() {
+            const grid = document.getElementById('booksGrid');
+            
+            grid.innerHTML = books.map(book => {
+                const isSaved = OfflineStorage.isSaved(book.id);
+                
+                return `
+                    <div class="book-card">
+                        <div class="book-icon">📖</div>
+                        <div class="book-title">${book.title}</div>
+                        <div class="book-meta">${book.subject} • ${book.class}</div>
+                        <div class="book-actions">
+                            <a href="${book.url}" class="btn-download" target="_blank">📥 Download</a>
+                            <button class="btn-save-offline" 
+                                    onclick="saveBook('${book.id}')" 
+                                    ${isSaved ? 'disabled' : ''}>
+                                ${isSaved ? '✓ Saved' : '💾 Save Offline'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function saveBook(bookId) {
+            const book = books.find(b => b.id === bookId);
+            if (!book) return;
+
+            const result = OfflineStorage.save(book);
+            
+            if (result.success) {
+                showNotification('Book saved to offline library!', 'success');
+                renderBooks(); // Re-render to update button state
+            } else {
+                showNotification(result.message, 'error');
+            }
+        }
+
+        // Initial render
+        renderBooks();
+    </script>
+</body>
+</html>

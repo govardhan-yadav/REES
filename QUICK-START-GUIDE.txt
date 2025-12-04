@@ -1,0 +1,83 @@
+========================================
+        QUICK START GUIDE
+========================================
+
+🚀 EVERYTHING IS READY!
+
+STEP 1: START SERVER
+--------------------
+Open CMD and run:
+  cd "c:\CAPSTONE\Capstone PSCS-32\FINAL\PSCS 32"
+  npm start
+
+Wait for: "✅ Server running on http://localhost:3001"
+
+STEP 2: OPEN WEBSITE
+--------------------
+Open: index.html in your browser
+
+STEP 3: CHOOSE YOUR ROLE
+-------------------------
+
+👨‍🏫 FOR TEACHERS:
+   Click "🎓 Teacher" in menu
+   Login: teacher@demo.com
+   Password: demo123
+   
+   You can:
+   ✅ View 5 sample quizzes
+   ✅ Create new quizzes
+   ✅ Delete quizzes
+   ✅ Manage questions
+
+👨‍🎓 FOR STUDENTS:
+   Click "📝 Quiz" in menu
+   
+   You can:
+   ✅ Browse all quizzes
+   ✅ Take any quiz
+   ✅ Get instant results
+   ✅ See your score
+
+SAMPLE QUIZZES AVAILABLE:
+--------------------------
+✅ Class 10 Math - Quadratic Equations
+✅ Class 9 Science - Motion & Force
+✅ Class 8 English - Grammar
+✅ Class 7 Math - Integers
+✅ Class 6 Science - Plants & Animals
+
+FEATURES:
+---------
+✅ AI Chatbot (💬 button)
+✅ Teacher Dashboard
+✅ Student Quiz Portal
+✅ Instant Grading
+✅ Multiple Choice Questions
+✅ Beautiful UI
+
+NAVIGATION:
+-----------
+Main Menu:
+- Home
+- Books
+- 🎓 Teacher (NEW!)
+- 📝 Quiz (NEW!)
+- Courses
+- Contact Us
+- Login
+
+TROUBLESHOOTING:
+----------------
+❌ Server not running?
+   → Run: npm start
+
+❌ Can't login?
+   → Use: teacher@demo.com / demo123
+
+❌ No quizzes showing?
+   → Check data/quizzes.json exists
+
+========================================
+     ENJOY YOUR QUIZ SYSTEM! 🎉
+========================================

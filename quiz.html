@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quiz Center — Professional</title>
+
+  <style>
+  /* ====== Professional Quiz UI (dark/blue theme) ====== */
+  :root{
+    --bg-0:#031025; --bg-1:#021b36; --panel:#01263e; --glass:rgba(255,255,255,0.03);
+    --accent:#0091ff; --accent-2:#0066cc; --muted:#9ecfff; --success:#2cd88a;
+    --card-radius:12px; --shadow: 0 12px 40px rgba(0,0,0,0.6);
+    --focus: 0 0 0 4px rgba(0,145,255,0.15);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    color-scheme: dark;
+  }
+  html,body{height:100%; margin:0; background: linear-gradient(180deg,var(--bg-0),var(--bg-1)); color:#e9f6ff;}
+  .wrap{max-width:1100px; margin:28px auto; padding:18px;}
+  .card{background:linear-gradient(180deg,var(--panel),#002c44); border-radius:var(--card-radius); box-shadow:var(--shadow); padding:18px;}
+  h1{margin:0 0 6px; color:var(--muted); font-size:20px;}
+  .lead{color:#bfe6ff; margin:0 0 18px; font-size:13px;}
+
+  /* toolbar */
+  .toolbar{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:12px;}
+  select,input[type="checkbox"]{padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:rgba(0,0,0,0.2); color:var(--muted); min-width:140px;}
+  label.small{font-size:13px; color:#bcdfff; margin-right:6px;}
+  .btn{padding:10px 14px; border-radius:9px; border:none; cursor:pointer; font-weight:600;}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:white;}
+  .btn.ghost{background:transparent; border:1px solid rgba(127,182,255,0.12); color:var(--muted);}
+
+  .panel{display:flex; gap:18px;}
+  .left{flex:1;}
+  .right{width:320px;}
+
+  /* quiz card */
+  .quiz-card{background:var(--glass); border-radius:10px; padding:16px;}
+  .meta{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;}
+  .meta .muted{color:#bfe6ff; font-size:13px;}
+  .progress{height:8px; background:rgba(255,255,255,0.03); border-radius:999px; overflow:hidden; margin-top:8px;}
+  .progress > div{height:100%; background:linear-gradient(90deg,var(--accent),#00a6ff); width:0%; transition:width 300ms ease;}
+
+  .q-index{color:#a9d7ff; font-size:13px; margin-bottom:6px;}
+  .q-text{font-size:18px; margin-bottom:12px; color:#eaf4ff; line-height:1.4;}
+
+  .options{display:flex; flex-direction:column; gap:10px;}
+  .option{display:block; padding:12px 14px; border-radius:10px; cursor:pointer; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03); color:#dff2ff; text-align:left; transition:transform 120ms ease, box-shadow 120ms ease;}
+  .option:hover{transform:translateY(-3px); box-shadow:0 12px 30px rgba(0,0,0,0.6);}
+  .option.selected{background:linear-gradient(90deg,#0059d6,#004299); color:white; border-color:rgba(0,140,255,0.2);}
+  .option.correct{box-shadow:0 0 0 4px rgba(45,200,150,0.07); border-color:rgba(45,200,150,0.14);}
+  .option.wrong{opacity:0.85; filter:grayscale(.15); border-color:rgba(255,0,0,0.06);}
+
+  .nav{display:flex; justify-content:space-between; gap:8px; margin-top:14px;}
+  .nav .left-group{display:flex; gap:8px;}
+  .small{font-size:13px; color:#bfe6ff;}
+
+  /* right column */
+  .box{background:rgba(255,255,255,0.02); padding:12px; border-radius:10px; margin-bottom:12px;}
+  .leaderboard{max-height:260px; overflow:auto; font-size:13px;}
+  .leaderboard .row{display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.02);}
+  .leaderboard .row .meta{color:#cfe8ff; font-size:12px;}
+
+  /* result / certificate */
+  .result{background:linear-gradient(180deg,#00223b,#002e52); padding:12px; border-radius:10px; color:#eaf4ff; margin-top:12px;}
+
+  /* settings modal (simple) */
+  .modal{position:fixed; left:0; top:0; right:0; bottom:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.45); z-index:9999;}
+  .modal.open{display:flex;}
+  .modal .dialog{width:520px; max-width:92%; background:linear-gradient(180deg,#001f3a,#00283f); padding:16px; border-radius:10px; box-shadow:0 20px 60px rgba(0,0,0,0.7);}
+
+  /* responsive */
+  @media (max-width:980px){ .panel{flex-direction:column-reverse} .right{width:100%} }
+  @media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+  </style>
+</head>
+<body>
+  <div class="wrap card" role="main">
+    <h1>Quiz Center — Professional</h1>
+    <p class="lead">Structured quizzes for Classes 1–10. Choose class, subject and chapter. Timers, randomized questions, explanations, leaderboard and printable certificates included.</p>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar" role="toolbar" aria-label="Quiz controls">
+      <label class="small" for="classSelect">Class</label>
+      <select id="classSelect" aria-label="Select class"><option value="">Loading...</option></select>
+
+      <label class="small" for="subjectSelect">Subject</label>
+      <select id="subjectSelect" aria-label="Select subject" disabled><option value="">Select subject</option></select>
+
+      <label class="small" for="chapterSelect">Chapter</label>
+      <select id="chapterSelect" aria-label="Select chapter" disabled><option value="">All chapters</option></select>
+
+      <label class="small" title="Shuffle question order"><input id="randQ" type="checkbox" /> Random</label>
+      <label class="small" title="Shuffle options"><input id="randOpt" type="checkbox" /> Shuffle options</label>
+
+      <label class="small" for="timerSelect">Timer</label>
+      <select id="timerSelect" aria-label="Select timer"><option value="0">No timer</option><option value="5">5 min</option><option value="10">10 min</option><option value="15">15 min</option></select>
+
+      <button id="loadBtn" class="btn ghost" title="Load quiz">Load</button>
+      <button id="startBtn" class="btn primary" disabled title="Start quiz">Start</button>
+
+      <div style="margin-left:auto; display:flex; gap:8px;">
+        <button id="settingsBtn" class="btn ghost" title="Settings">Settings</button>
+        <button id="helpBtn" class="btn ghost" title="Help">Help</button>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:8px;">
+      <div class="left">
+        <div class="quiz-card" role="region" aria-live="polite" aria-atomic="true">
+          <div class="meta">
+            <div class="muted" id="metaText">Select class & subject to load questions</div>
+            <div class="muted" id="timerText"></div>
+          </div>
+
+          <div class="progress" aria-hidden="true"><div id="progressBar" style="width:0%"></div></div>
+
+          <div id="quizArea" style="margin-top:12px; display:none;">
+            <div id="qIndex" class="q-index">Question 0 / 0</div>
+            <div id="qText" class="q-text">—</div>
+
+            <div id="options" class="options" role="list"></div>
+
+            <div class="nav">
+              <div class="left-group">
+                <button id="prevBtn" class="btn ghost" title="Previous (Arrow Left)">Previous</button>
+                <button id="nextBtn" class="btn ghost" title="Next (Arrow Right)">Next</button>
+              </div>
+              <div>
+                <button id="submitBtn" class="btn primary" title="Submit (Enter)">Submit</button>
+              </div>
+            </div>
+
+            <div id="afterResult" style="display:none;">
+              <div id="resultPanel" class="result"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="box">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong>Quick actions</strong>
+            <small class="small">v1.0</small>
+          </div>
+          <div style="margin-top:8px;display:flex;gap:8px;">
+            <button id="leaderboardBtn" class="btn ghost" title="Show leaderboard">Leaderboard</button>
+            <button id="exportBtn" class="btn ghost" title="Export CSV">Export CSV</button>
+          </div>
+        </div>
+
+        <div class="box">
+          <strong>Leaderboard</strong>
+          <div id="leaderboard" class="leaderboard small" aria-live="polite">No entries yet.</div>
+        </div>
+
+        <div class="box">
+          <strong>Settings</strong>
+          <div style="margin-top:8px;" class="small">Save results: <label><input id="syncBackend" type="checkbox" /> Sync to backend</label></div>
+          <div style="margin-top:8px;" class="small">Backend endpoints: <code>/api/quizzes</code> &amp; <code>/api/leaderboard</code></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Simple settings / help modal -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="dialog" role="document">
+      <h3 id="modalTitle">Settings</h3>
+      <div id="modalBody" style="margin-top:8px;">
+        <p class="small">Keyboard shortcuts: 1-4 select options, ←/→ prev/next, Enter to submit. Toggle exponent options in Settings.</p>
+        <div style="margin-top:10px; display:flex; gap:8px;">
+          <button id="modalClose" class="btn ghost">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ====== Professional Quiz JS ====== */
+/* Features:
+   - loads /api/quizzes if available, otherwise uses QUIZ_DATA
+   - randomize questions and/or options
+   - per-quiz timer (global) or none
+   - per-question navigation + keyboard support
+   - shows explanations on submit (and inline)
+   - leaderboard stored in localStorage and optionally POSTed to /api/leaderboard
+   - certificate generation window
+*/
+
+const QUIZ_DATA = {
+  "Class 1": {
+    "Math": {
+      "Chapter 1": [
+        { q:"1 + 1 = ?", options:["1","2","3","0"], answer:1, explanation:"1 plus 1 equals 2." },
+        { q:"Which number is even?", options:["3","7","8","9"], answer:2, explanation:"8 is even." }
+      ],
+      "Chapter 2": [
+        { q:"What comes after 4?", options:["3","5","6","7"], answer:1, explanation:"5 follows 4." }
+      ]
+    },
+    "English": {
+      "Chapter 1": [
+        { q:"Which is a vowel?", options:["b","c","a","d"], answer:2, explanation:"A, E, I, O, U are vowels." }
+      ]
+    }
+  },
+  "Class 6": {
+    "Science": {
+      "Nutrition": [
+        { q:"Where does photosynthesis occur in a plant?", options:["Root","Leaf","Stem","Flower"], answer:1, explanation:"Photosynthesis occurs in leaves." }
+      ]
+    }
+  },
+  "Class 10": {
+    "Math": {
+      "Quadratics": [
+        { q:"Roots of x² - 5x + 6 = 0?", options:["2 & 3","1 & 6","-2 & 3","None"], answer:0, explanation:"(x-2)(x-3)=0, so x=2 or 3." }
+      ]
+    }
+  }
+};
+
+/* ---------- Elements ---------- */
+const classSelect = document.getElementById('classSelect');
+const subjectSelect = document.getElementById('subjectSelect');
+const chapterSelect = document.getElementById('chapterSelect');
+const randQ = document.getElementById('randQ');
+const randOpt = document.getElementById('randOpt');
+const timerSelect = document.getElementById('timerSelect');
+const loadBtn = document.getElementById('loadBtn');
+const startBtn = document.getElementById('startBtn');
+
+const quizArea = document.getElementById('quizArea');
+const metaText = document.getElementById('metaText');
+const timerText = document.getElementById('timerText');
+const progressBar = document.getElementById('progressBar');
+
+const qIndex = document.getElementById('qIndex');
+const qText = document.getElementById('qText');
+const optionsEl = document.getElementById('options');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const submitBtn = document.getElementById('submitBtn');
+
+const leaderboardEl = document.getElementById('leaderboard');
+const leaderboardBtn = document.getElementById('leaderboardBtn');
+const exportBtn = document.getElementById('exportBtn');
+const syncBackend = document.getElementById('syncBackend');
+
+const modal = document.getElementById('modal');
+const settingsBtn = document.getElementById('settingsBtn');
+const helpBtn = document.getElementById('helpBtn');
+const modalClose = document.getElementById('modalClose');
+
+/* ---------- State ---------- */
+let ALL_QUIZZES = null;
+let currentQuestions = []; // flattened {q,options,answer,explanation,chapter}
+let currentIndex = 0;
+let userAnswers = []; // index -> selected option index (or null)
+let timerId = null;
+let secondsLeft = 0;
+const LB_KEY = 'pro_quiz_leaderboard_v1';
+
+/* ---------- Utilities ---------- */
+function $(s){ return document.querySelector(s); }
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } }
+
+/* ---------- Load quizzes (try backend) ---------- */
+async function init(){
+  try{
+    const res = await fetch('/api/quizzes');
+    if (res.ok){
+      ALL_QUIZZES = await res.json();
+    } else {
+      ALL_QUIZZES = QUIZ_DATA;
+    }
+  }catch(e){
+    ALL_QUIZZES = QUIZ_DATA;
+  }
+  populateClasses();
+  renderLeaderboard();
+}
+function populateClasses(){
+  classSelect.innerHTML = '<option value="">Select Class</option>';
+  Object.keys(ALL_QUIZZES).forEach(c => {
+    const o = document.createElement('option'); o.value=c; o.textContent=c; classSelect.appendChild(o);
+  });
+  subjectSelect.innerHTML = '<option value="">Select subject</option>'; subjectSelect.disabled = true;
+  chapterSelect.innerHTML = '<option value="">All chapters</option>'; chapterSelect.disabled = true;
+  startBtn.disabled = true;
+}
+
+/* ---------- UI events ---------- */
+classSelect.addEventListener('change', () => {
+  const c = classSelect.value;
+  subjectSelect.innerHTML = '<option value="">Select subject</option>';
+  chapterSelect.innerHTML = '<option value="">All chapters</option>';
+  if (!c){ subjectSelect.disabled = true; chapterSelect.disabled = true; startBtn.disabled = true; return; }
+  const subs = Object.keys(ALL_QUIZZES[c] || {});
+  subs.forEach(s => subjectSelect.appendChild(Object.assign(document.createElement('option'), { value:s, textContent:s })));
+  subjectSelect.disabled = false; chapterSelect.disabled=true; startBtn.disabled=true;
+});
+subjectSelect.addEventListener('change', () => {
+  const c = classSelect.value, s = subjectSelect.value;
+  chapterSelect.innerHTML = '<option value="">All chapters</option>';
+  if (!s){ chapterSelect.disabled=true; startBtn.disabled=true; return; }
+  const chs = Object.keys(ALL_QUIZZES[c][s] || {});
+  chs.forEach(ch => chapterSelect.appendChild(Object.assign(document.createElement('option'), { value:ch, textContent:ch })));
+  chapterSelect.disabled = false; startBtn.disabled=false;
+});
+
+loadBtn.addEventListener('click', () => prepareQuiz(false));
+startBtn.addEventListener('click', () => prepareQuiz(true));
+
+prevBtn.addEventListener('click', () => { if (currentIndex>0){ currentIndex--; renderQuestion(); } });
+nextBtn.addEventListener('click', () => { if (currentIndex < currentQuestions.length-1){ currentIndex++; renderQuestion(); } });
+
+submitBtn.addEventListener('click', () => { if (confirm('Submit quiz?')) submitQuiz(); });
+
+leaderboardBtn.addEventListener('click', () => renderLeaderboard(true));
+exportBtn.addEventListener('click', exportLeaderboardCSV);
+
+settingsBtn.addEventListener('click', ()=> openModal('Settings', 'Keyboard: 1-4 to select | ←/→ previous/next | Enter submit. Close modal to continue.'));
+helpBtn.addEventListener('click', ()=> openModal('Help', 'Choose class, subject and chapter. Use Random toggles to shuffle questions/options. Timer will auto-submit on expiry.'));
+modalClose.addEventListener('click', closeModal);
+
+/* keyboard support */
+window.addEventListener('keydown', (e) => {
+  if (modal.classList.contains('open')) return;
+  if (!quizArea.style.display || quizArea.style.display === 'none') return;
+  const k = e.key;
+  if (['1','2','3','4'].includes(k)){
+    const idx = Number(k)-1;
+    const opts = optionsEl.querySelectorAll('.option');
+    if (opts[idx]) opts[idx].click();
+  } else if (k === 'ArrowLeft'){ prevBtn.click(); }
+  else if (k === 'ArrowRight'){ nextBtn.click(); }
+  else if (k === 'Enter'){ submitBtn.click(); }
+});
+
+/* ---------- Prepare / start quiz ---------- */
+function gatherQuestions(cls, sub, ch){
+  const chapters = ch ? [ch] : Object.keys(ALL_QUIZZES[cls][sub] || {});
+  const list = [];
+  chapters.forEach(chp => {
+    (ALL_QUIZZES[cls][sub][chp] || []).forEach(q => list.push(Object.assign({}, q, { chapter:chp })));
+  });
+  return list;
+}
+
+function prepareQuiz(startImmediately){
+  const cls = classSelect.value, sub = subjectSelect.value, ch = chapterSelect.value;
+  if (!cls || !sub){ alert('Select class and subject'); return; }
+  let list = gatherQuestions(cls, sub, ch);
+  if (!list.length){ alert('No questions found'); return; }
+  // question shuffle
+  if (randQ.checked) shuffle(list);
+  // optionally shuffle options per question
+  if (randOpt.checked) list.forEach(q => shuffleOptions(q));
+  currentQuestions = list;
+  currentIndex = 0;
+  userAnswers = Array(list.length).fill(null);
+  // timer
+  const mins = parseInt(timerSelect.value) || 0; secondsLeft = mins>0 ? mins*60 : 0;
+  // UI
+  metaText.textContent = `${cls} • ${sub} ${ch ? '• ' + ch : ''} — ${list.length} questions`;
+  progressBar.style.width = '0%';
+  quizArea.style.display = 'block';
+  document.getElementById('afterResult').style.display = 'none';
+  renderQuestion();
+  if (startImmediately) startTimer();
+}
+
+/* shuffle options while keeping correct answer index mapped */
+function shuffleOptions(question){
+  const opts = question.options.map((o,i)=>({o,i}));
+  shuffle(opts);
+  // new options and new answer index
+  question.options = opts.map(x=>x.o);
+  question.answer = opts.findIndex(x => x.i === question.answer);
+}
+
+/* ---------- render ---------- */
+function renderQuestion(){
+  const q = currentQuestions[currentIndex];
+  qIndex.textContent = `Question ${currentIndex+1} / ${currentQuestions.length}`;
+  qText.textContent = q.q;
+  optionsEl.innerHTML = '';
+  q.options.forEach((opt,i) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'option';
+    btn.setAttribute('role','listitem');
+    btn.innerHTML = `<span>${escapeHtml(opt)}</span>`;
+    if (userAnswers[currentIndex] === i) btn.classList.add('selected');
+    btn.addEventListener('click', () => {
+      userAnswers[currentIndex] = i;
+      // visual states
+      optionsEl.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
+      btn.classList.add('selected');
+      // immediate inline explanation (optional): show small explanation below options
+      showInlineExplanation(q, i);
+      // progress update
+      updateProgress();
+      // analytics (beacon)
+      try{ navigator.sendBeacon && navigator.sendBeacon('/api/analytics', JSON.stringify({event:'answer', class:classSelect.value, subject:subjectSelect.value})); }catch(e){}
+    });
+    optionsEl.appendChild(btn);
+  });
+  // update progress
+  updateProgress();
+  // update timer display
+  updateTimerDisplay();
+  // focus first option for accessibility
+  const first = optionsEl.querySelector('.option');
+  if (first) first.focus();
+}
+
+/* show inline explanation (small) */
+function showInlineExplanation(q, selIndex){
+  // remove old expl
+  const old = document.querySelector('.inline-expl');
+  if (old) old.remove();
+  const wrap = document.createElement('div'); wrap.className='inline-expl small'; wrap.style.marginTop='8px'; wrap.style.color='#cfe8ff';
+  const ok = (typeof selIndex === 'number' && selIndex === q.answer);
+  wrap.innerHTML = (ok ? '✅ Correct. ' : '❌ Not correct. ') + (q.explanation ? escapeHtml(q.explanation) : '');
+  optionsEl.parentElement.appendChild(wrap);
+}
+
+/* update progress bar and summary */
+function updateProgress(){
+  const answered = userAnswers.filter(x=>x !== null).length;
+  const pct = Math.round((answered / currentQuestions.length) * 100);
+  progressBar.style.width = pct + '%';
+}
+
+/* ---------- timer ---------- */
+function startTimer(){
+  clearTimer();
+  if (secondsLeft <= 0) return;
+  updateTimerDisplay();
+  timerId = setInterval(() => {
+    secondsLeft--;
+    updateTimerDisplay();
+    if (secondsLeft <= 0){ clearTimer(); alert('Time is up — submitting quiz'); submitQuiz(); }
+  }, 1000);
+}
+function clearTimer(){ if (timerId){ clearInterval(timerId); timerId = null; } timerText.textContent = ''; }
+function updateTimerDisplay(){ if (secondsLeft <= 0) { timerText.textContent = ''; return; } const m = Math.floor(secondsLeft/60), s = secondsLeft%60; timerText.textContent = `Time left: ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
+
+/* ---------- submit & scoring ---------- */
+async function submitQuiz(){
+  clearTimer();
+  // compute
+  let correct = 0;
+  const details = currentQuestions.map((q, idx) => {
+    const sel = userAnswers[idx];
+    const ok = (typeof sel === 'number' && sel === q.answer);
+    if (ok) correct++;
+    return { q:q.q, selected: sel==null?null:q.options[sel], correct: q.options[q.answer], ok, expl: q.explanation || '' };
+  });
+  const pct = Math.round((correct / currentQuestions.length) * 100);
+  // show results
+  showResults(correct, currentQuestions.length, pct, details);
+  // leaderboard entry
+// get or create userId
+let userId = localStorage.getItem('quiz_user_id');
+if (!userId) {
+  userId = 'u_' + Math.random().toString(36).slice(2);
+  localStorage.setItem('quiz_user_id', userId);
+}
+
+const entry = {
+  id: Date.now(),
+  userId,
+  class: classSelect.value,
+  subject: subjectSelect.value,
+  chapter: chapterSelect.value || 'All',
+  score: pct,
+  correct,
+  total: currentQuestions.length,
+  date: new Date().toISOString()
+};
+
+// save to local leaderboard (existing)
+saveLeaderboardEntry(entry);
+
+// sync with backend leaderboard (existing)
+if (syncBackend.checked){
+  try {
+    await fetch('/api/leaderboard', {
+      method:'POST',
+      headers:{'content-type':'application/json'},
+      body: JSON.stringify(entry)
+    });
+  } catch(e) {
+    console.warn('sync leaderboard failed', e.message);
+  }
+}
+
+// NEW: send progress to /api/progress
+try {
+  await fetch('/api/progress', {
+    method:'POST',
+    headers:{'content-type':'application/json'},
+    body: JSON.stringify(entry)
+  });
+} catch(e) {
+  console.warn('progress save failed', e.message);
+}
+
+  saveLeaderboardEntry(entry);
+  if (syncBackend.checked){
+    try{ await fetch('/api/leaderboard', { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(entry) }); } catch(e){ console.warn('sync failed', e.message); }
+  }
+  // analytics beacon
+  try{ navigator.sendBeacon && navigator.sendBeacon('/api/analytics', JSON.stringify({event:'submit', score:pct})); }catch(e){}
+}
+
+/* render results panel */
+function showResults(correct, total, pct, details){
+  document.getElementById('afterResult').style.display = 'block';
+  const panel = document.getElementById('resultPanel');
+  panel.innerHTML = `<strong>Result: ${correct} / ${total} (${pct}%)</strong>
+    <div style="margin-top:10px; font-size:13px; color:#cfe8ff;">Detailed answers below. Explanations are shown where available.</div>
+    <div style="margin-top:10px;">${details.map(d => `<div style="padding:8px 0; border-top:1px solid rgba(255,255,255,0.03)"><strong>${d.ok? '✅':'❌'}</strong> ${escapeHtml(d.q)}<div style="font-size:13px;color:#bfe6ff;margin-top:6px">Your: ${escapeHtml(d.selected||'No answer')} • Correct: ${escapeHtml(d.correct)}${d.expl?'<br/><em style="color:#9fe3ff">Explanation: '+escapeHtml(d.expl)+'</em>':''}</div></div>`).join('')}</div>
+    <div style="margin-top:12px; display:flex; gap:8px;"><button id="certBtn" class="btn primary">Get Certificate</button><button id="retakeBtn" class="btn ghost">Retake</button></div>`;
+  document.getElementById('certBtn').addEventListener('click', ()=>openCertificate({score:pct, correct, total}));
+  document.getElementById('retakeBtn').addEventListener('click', ()=> { currentIndex=0; userAnswers = Array(currentQuestions.length).fill(null); document.getElementById('afterResult').style.display='none'; renderQuestion(); });
+}
+
+/* ---------- leaderboard localStorage ---------- */
+function loadLeaderboard(){ try{ return JSON.parse(localStorage.getItem(LB_KEY) || '[]'); }catch(e){ return []; } }
+function saveLeaderboard(arr){ try{ localStorage.setItem(LB_KEY, JSON.stringify(arr)); }catch(e){} }
+function saveLeaderboardEntry(entry){
+  const arr = loadLeaderboard();
+  arr.push(entry);
+  if (arr.length>200) arr.shift();
+  saveLeaderboard(arr);
+  renderLeaderboard();
+}
+function renderLeaderboard(alertMsg){
+  const arr = loadLeaderboard();
+  if (!arr.length){ leaderboardEl.innerHTML = '<div class="small">No scores yet.</div>'; return; }
+  // sort by score desc and date
+  arr.sort((a,b)=> b.score - a.score || new Date(b.date) - new Date(a.date));
+  leaderboardEl.innerHTML = arr.slice(0,20).map((r,i)=> `<div class="row"><div><strong>#${i+1}</strong> ${escapeHtml(r.class)} • ${escapeHtml(r.subject)} (${escapeHtml(r.chapter)})</div><div class="meta"><strong>${r.score}%</strong><div style="font-size:11px;color:#bfe6ff">${new Date(r.date).toLocaleString()}</div></div></div>`).join('');
+  if (alertMsg) alert(alertMsg);
+}
+function exportLeaderboardCSV(){
+  const arr = loadLeaderboard();
+  if (!arr.length){ alert('No data'); return; }
+  const csv = ['date,class,subject,chapter,score,correct,total'].concat(arr.map(r => `${r.date},${r.class},${r.subject},${r.chapter},${r.score},${r.correct},${r.total}`)).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'}); const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'leaderboard.csv'; a.click(); URL.revokeObjectURL(url);
+}
+
+/* ---------- Certificate ---------- */
+function openCertificate({score, correct, total}){
+  const name = prompt('Enter name for certificate:') || 'Student';
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>Certificate</title><style>body{font-family:Arial,Helvetica,sans-serif;background:#f6fbff;color:#012}.cert{width:800px;margin:40px auto;padding:40px;border:8px solid #0059b3;border-radius:8px;text-align:center}h1{color:#003366} .meta{color:#004} .print{margin-top:18px;padding:10px 14px;background:#007bff;color:#fff;border:none;border-radius:8px;cursor:pointer}</style></head><body><div class="cert"><h1>Certificate of Achievement</h1><div class="meta" style="margin-top:8px">Quiz: ${escapeHtml(classSelect.value)} • ${escapeHtml(subjectSelect.value)} ${escapeHtml(chapterSelect.value||'')}</div><h2 style="margin-top:18px">${escapeHtml(name)}</h2><div style="font-size:20px;margin-top:12px">Score: <strong>${score}%</strong> (${correct}/${total})</div><div style="margin-top:22px"><button class="print" onclick="window.print()">Print / Save as PDF</button></div></div></body></html>`;
+  const w = window.open('', '_blank', 'width=900,height=700');
+  w.document.write(html); w.document.close();
+}
+
+/* ---------- modal ---------- */
+function openModal(title, html){ modal.classList.add('open'); modal.querySelector('.dialog h3').textContent = title; modal.querySelector('#modalBody p').textContent = html; modal.setAttribute('aria-hidden','false'); }
+function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
+
+/* ---------- Helper: try fetch /api/quizzes at init ---------- */
+init();
+</script>
+</body>
+</html>

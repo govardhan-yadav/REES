@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Login - REES</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;display:flex;align-items:center;justify-content:center}
+        .container{background:#fff;padding:40px;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,0.2);width:400px;max-width:90%}
+        h1{text-align:center;color:#333;margin-bottom:30px}
+        .form-group{margin-bottom:20px}
+        label{display:block;margin-bottom:5px;color:#555;font-weight:600}
+        input{width:100%;padding:12px;border:1px solid #ddd;border-radius:5px;font-size:14px}
+        input:focus{outline:none;border-color:#667eea}
+        .btn{width:100%;padding:12px;background:#667eea;color:#fff;border:none;border-radius:5px;font-size:16px;cursor:pointer;margin-top:10px}
+        .btn:hover{background:#5568d3}
+        .error{color:#e74c3c;font-size:14px;margin-top:10px;text-align:center}
+        .success{color:#27ae60;font-size:14px;margin-top:10px;text-align:center}
+        .link{text-align:center;margin-top:20px;color:#667eea;cursor:pointer;text-decoration:underline}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎓 Teacher Login</h1>
+        <div id="loginForm">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="teacher@school.com" onkeypress="if(event.key==='Enter')login()">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password" onkeypress="if(event.key==='Enter')login()">
+            </div>
+            <button class="btn" onclick="login()">Login</button>
+            <div id="message"></div>
+            <div class="link" onclick="showRegister()">New teacher? Register here</div>
+        </div>
+        
+        <div id="registerForm" style="display:none">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="regName" placeholder="Full Name" onkeypress="if(event.key==='Enter')register()">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="regEmail" placeholder="teacher@school.com" onkeypress="if(event.key==='Enter')register()">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="regPassword" placeholder="Create password" onkeypress="if(event.key==='Enter')register()">
+            </div>
+            <button class="btn" onclick="register()">Register</button>
+            <div id="regMessage"></div>
+            <div class="link" onclick="showLogin()">Already registered? Login</div>
+        </div>
+    </div>
+
+    <script>
+        function showRegister(){
+            document.getElementById('loginForm').style.display='none';
+            document.getElementById('registerForm').style.display='block';
+        }
+        function showLogin(){
+            document.getElementById('loginForm').style.display='block';
+            document.getElementById('registerForm').style.display='none';
+        }
+        
+        async function register(){
+            const name=document.getElementById('regName').value.trim();
+            const email=document.getElementById('regEmail').value.trim();
+            const password=document.getElementById('regPassword').value;
+            
+            if(!name||!email||!password){
+                document.getElementById('regMessage').innerHTML='<div class="error">All fields required</div>';
+                return;
+            }
+            
+            try{
+                const r=await fetch('http://localhost:3001/api/auth/teacher/register',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({name,email,password})
+                });
+                const d=await r.json();
+                if(d.success){
+                    localStorage.setItem('teacher_token',d.token);
+                    localStorage.setItem('teacher',JSON.stringify(d.teacher));
+                    document.getElementById('regMessage').innerHTML='<div class="success">Registered! Redirecting...</div>';
+                    setTimeout(()=>window.location.href='teacher-dashboard.html',1000);
+                }else{
+                    document.getElementById('regMessage').innerHTML='<div class="error">'+(d.error||'Registration failed')+'</div>';
+                }
+            }catch(e){
+                document.getElementById('regMessage').innerHTML='<div class="error">Server error. Run: npm start</div>';
+                console.error(e);
+            }
+        }
+        
+        async function login(){
+            const email=document.getElementById('email').value.trim();
+            const password=document.getElementById('password').value;
+            
+            if(!email||!password){
+                document.getElementById('message').innerHTML='<div class="error">All fields required</div>';
+                return;
+            }
+            
+            document.getElementById('message').innerHTML='<div class="success">Logging in...</div>';
+            
+            try{
+                const r=await fetch('http://localhost:3001/api/auth/teacher/login',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({email,password})
+                });
+                
+                if(!r.ok) throw new Error('Network error');
+                
+                const d=await r.json();
+                console.log('Login response:',d);
+                
+                if(d.success){
+                    localStorage.setItem('teacher_token',d.token);
+                    localStorage.setItem('teacher',JSON.stringify(d.teacher));
+                    document.getElementById('message').innerHTML='<div class="success">Login successful!</div>';
+                    setTimeout(()=>window.location.href='teacher-dashboard.html',500);
+                }else{
+                    document.getElementById('message').innerHTML='<div class="error">'+(d.error||'Login failed')+'</div>';
+                }
+            }catch(e){
+                document.getElementById('message').innerHTML='<div class="error">Cannot connect to server. Run: npm start</div>';
+                console.error('Login error:',e);
+            }
+        }
+    </script>
+</body>
+</html>

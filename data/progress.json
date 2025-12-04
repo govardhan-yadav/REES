@@ -1,0 +1,74 @@
+[
+  {
+    "id": "1764225636297",
+    "userId": "u_rf7iq4zc2b",
+    "className": "Class 2",
+    "subject": "maths",
+    "chapter": "fractions",
+    "score": 100,
+    "correct": 1,
+    "total": 1,
+    "quizId": "q_1764223922617",
+    "date": "2025-11-27T06:40:36.297Z"
+  },
+  {
+    "id": "1764231000704",
+    "userId": "u_rf7iq4zc2b",
+    "className": "Class 1",
+    "subject": "MATHS",
+    "chapter": "NUMBER SYSTEM",
+    "score": 100,
+    "correct": 1,
+    "total": 1,
+    "quizId": "q_1764230986128",
+    "date": "2025-11-27T08:10:00.704Z"
+  },
+  {
+    "id": "1764511577321",
+    "userId": "u_rf7iq4zc2b",
+    "className": "Class 2",
+    "subject": "maths",
+    "chapter": "fractions",
+    "score": 100,
+    "correct": 1,
+    "total": 1,
+    "quizId": "q_1764223922617",
+    "date": "2025-11-30T14:06:17.322Z"
+  },
+  {
+    "id": "1764512864076",
+    "userId": "u_rf7iq4zc2b",
+    "className": "Class 2",
+    "subject": "maths",
+    "chapter": "fractions",
+    "score": 100,
+    "correct": 1,
+    "total": 1,
+    "quizId": "q_1764223922617",
+    "date": "2025-11-30T14:27:44.076Z"
+  },
+  {
+    "id": "1764517640548",
+    "userId": "u_rf7iq4zc2b",
+    "className": "Class 1",
+    "subject": "MATHS",
+    "chapter": "NUMBER SYSTEM",
+    "score": 100,
+    "correct": 1,
+    "total": 1,
+    "quizId": "q_1764230986128",
+    "date": "2025-11-30T15:47:20.548Z"
+  },
+  {
+    "id": "1764519246867",
+    "userId": "u_rf7iq4zc2b",
+    "className": "Class 2",
+    "subject": "Maths",
+    "chapter": "Numbers",
+    "score": 100,
+    "correct": 1,
+    "total": 1,
+    "quizId": "q_1764519211438",
+    "date": "2025-11-30T16:14:06.867Z"
+  }
+]

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Feedback - REES</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { color: #2c3e50; margin-bottom: 10px; }
+        .subtitle { color: #7f8c8d; margin-bottom: 30px; }
+        .back-btn { display: inline-block; padding: 10px 20px; background: #95a5a6; color: #fff; text-decoration: none; border-radius: 5px; margin-bottom: 20px; }
+        .back-btn:hover { background: #7f8c8d; }
+        .results-list { display: grid; gap: 20px; }
+        .result-card { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-left: 4px solid #3498db; }
+        .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 2px solid #ecf0f1; }
+        .result-title { font-size: 18px; font-weight: 600; color: #2c3e50; }
+        .result-score { font-size: 24px; font-weight: 700; color: #3498db; }
+        .result-meta { font-size: 14px; color: #7f8c8d; margin-bottom: 15px; }
+        .feedback-section { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 15px; }
+        .feedback-label { font-weight: 600; color: #2c3e50; margin-bottom: 8px; display: block; }
+        .feedback-input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 14px; font-family: inherit; resize: vertical; min-height: 80px; }
+        .feedback-input:focus { outline: none; border-color: #3498db; }
+        .btn-submit { padding: 10px 20px; background: #27ae60; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 600; margin-top: 10px; }
+        .btn-submit:hover { background: #229954; }
+        .btn-submit:disabled { background: #95a5a6; cursor: not-allowed; }
+        .existing-feedback { background: #e8f5e9; padding: 12px; border-radius: 5px; margin-top: 10px; border-left: 3px solid #27ae60; }
+        .existing-feedback-label { font-size: 12px; color: #27ae60; font-weight: 600; margin-bottom: 5px; }
+        .existing-feedback-text { color: #2c3e50; font-size: 14px; }
+        .empty-state { text-align: center; padding: 60px 20px; background: #fff; border-radius: 10px; color: #95a5a6; }
+        .notification { position: fixed; top: 20px; right: 20px; padding: 15px 20px; background: #27ae60; color: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 1000; opacity: 0; transform: translateX(400px); transition: all 0.3s; }
+        .notification.show { opacity: 1; transform: translateX(0); }
+        @media (max-width: 768px) {
+            .result-header { flex-direction: column; align-items: flex-start; }
+            .result-score { margin-top: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="teacher-dashboard.html" class="back-btn">← Back to Dashboard</a>
+        
+        <h1>📝 Student Quiz Results & Feedback</h1>
+        <p class="subtitle">Review student performance and provide personalized feedback</p>
+
+        <div id="resultsList" class="results-list"></div>
+        
+        <div id="emptyState" class="empty-state" style="display:none">
+            <h2>No Quiz Results Yet</h2>
+            <p>Students haven't completed any quizzes yet.</p>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+        const FEEDBACK_KEY = 'teacher_feedback';
+        const PROGRESS_KEY = 'rees_progress';
+
+        // Get teacher info
+        const teacher = JSON.parse(localStorage.getItem('teacher') || '{"name":"Teacher"}');
+
+        // Load all feedback
+        function getAllFeedback() {
+            try {
+                return JSON.parse(localStorage.getItem(FEEDBACK_KEY) || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        // Save feedback
+        function saveFeedback(progressId, feedback) {
+            const allFeedback = getAllFeedback();
+            
+            // Check if feedback already exists
+            const existingIndex = allFeedback.findIndex(f => f.progressId === progressId);
+            
+            const feedbackObj = {
+                id: existingIndex >= 0 ? allFeedback[existingIndex].id : 'fb_' + Date.now(),
+                progressId: progressId,
+                teacherName: teacher.name,
+                feedback: feedback,
+                timestamp: new Date().toISOString()
+            };
+
+            if (existingIndex >= 0) {
+                allFeedback[existingIndex] = feedbackObj;
+            } else {
+                allFeedback.push(feedbackObj);
+            }
+
+            localStorage.setItem(FEEDBACK_KEY, JSON.stringify(allFeedback));
+            return feedbackObj;
+        }
+
+        // Get feedback for a progress entry
+        function getFeedbackForProgress(progressId) {
+            const allFeedback = getAllFeedback();
+            return allFeedback.find(f => f.progressId === progressId);
+        }
+
+        // Load quiz results
+        function loadResults() {
+            try {
+                const progress = JSON.parse(localStorage.getItem(PROGRESS_KEY) || '[]');
+                
+                if (progress.length === 0) {
+                    document.getElementById('emptyState').style.display = 'block';
+                    return;
+                }
+
+                // Sort by date (newest first)
+                progress.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                displayResults(progress);
+            } catch (e) {
+                console.error('Error loading results:', e);
+                document.getElementById('emptyState').style.display = 'block';
+            }
+        }
+
+        // Display results
+        function displayResults(results) {
+            const container = document.getElementById('resultsList');
+            
+            container.innerHTML = results.map(result => {
+                const existingFeedback = getFeedbackForProgress(result.id);
+                
+                return `
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div>
+                                <div class="result-title">${result.className} - ${result.subject}</div>
+                                <div style="color:#7f8c8d;font-size:14px;margin-top:5px">${result.chapter}</div>
+                            </div>
+                            <div class="result-score">${result.score}%</div>
+                        </div>
+                        
+                        <div class="result-meta">
+                            📅 ${new Date(result.date).toLocaleString()} • 
+                            ✓ ${result.correct}/${result.total} correct • 
+                            👤 Student ID: ${result.userId.substring(0, 8)}...
+                        </div>
+
+                        ${existingFeedback ? `
+                            <div class="existing-feedback">
+                                <div class="existing-feedback-label">
+                                    ✓ Feedback by ${existingFeedback.teacherName} on ${new Date(existingFeedback.timestamp).toLocaleString()}
+                                </div>
+                                <div class="existing-feedback-text">${existingFeedback.feedback}</div>
+                            </div>
+                        ` : ''}
+
+                        <div class="feedback-section">
+                            <label class="feedback-label">
+                                ${existingFeedback ? 'Update Feedback:' : 'Add Feedback:'}
+                            </label>
+                            <textarea 
+                                class="feedback-input" 
+                                id="feedback_${result.id}"
+                                placeholder="Write personalized feedback for the student..."
+                            >${existingFeedback ? existingFeedback.feedback : ''}</textarea>
+                            <button 
+                                class="btn-submit" 
+                                onclick="submitFeedback('${result.id}', '${result.className}', '${result.subject}', '${result.chapter}')"
+                            >
+                                ${existingFeedback ? 'Update Feedback' : 'Submit Feedback'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Submit feedback
+        function submitFeedback(progressId, className, subject, chapter) {
+            const textarea = document.getElementById('feedback_' + progressId);
+            const feedback = textarea.value.trim();
+
+            if (!feedback) {
+                showNotification('Please write some feedback', 'error');
+                return;
+            }
+
+            const feedbackObj = saveFeedback(progressId, feedback);
+            showNotification('Feedback saved successfully!', 'success');
+            
+            // Reload to show updated feedback
+            setTimeout(() => loadResults(), 500);
+        }
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.background = type === 'success' ? '#27ae60' : '#e74c3c';
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Load results on page load
+        loadResults();
+    </script>
+</body>
+</html>

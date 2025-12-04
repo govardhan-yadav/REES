@@ -1,0 +1,30 @@
+[
+  {
+    "id": "g1-counting",
+    "grade": "Class 1",
+    "title": "Numbers & Counting",
+    "description": "Counting 1–10 with fun visuals",
+    "youtubeId": "60zbfRwSRCg"
+  },
+  {
+    "id": "g6-numbers",
+    "grade": "Class 6",
+    "title": "Number Systems",
+    "description": "Integers & rational numbers explained",
+    "youtubeId": "9XmWcycaLYg"
+  },
+  {
+    "id": "g8-physics",
+    "grade": "Class 8",
+    "title": "Force and Pressure",
+    "description": "NCERT Class 8 Science Chapter 11",
+    "youtubeId": "BzUUPgZgJSY"
+  },
+  {
+    "id": "g10-maths",
+    "grade": "Class 10",
+    "title": "Quadratic Equations Full Chapter",
+    "description": "NCERT Maths Chapter 4 solutions",
+    "youtubeId": "VkcAiDhJAsY"
+  }
+]

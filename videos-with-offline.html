@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational Videos - Save Offline</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #fff; text-align: center; margin-bottom: 10px; }
+        .subtitle { color: #fff; text-align: center; margin-bottom: 30px; opacity: 0.9; }
+        .header-actions { text-align: center; margin-bottom: 30px; }
+        .btn { padding: 12px 24px; background: #fff; color: #11998e; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-block; margin: 0 5px; font-weight: 600; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .videos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .video-card { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.3s; }
+        .video-card:hover { transform: translateY(-5px); }
+        .video-thumbnail { width: 100%; height: 180px; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; font-size: 64px; }
+        .video-content { padding: 20px; }
+        .video-title { font-size: 18px; font-weight: 600; color: #333; margin-bottom: 8px; }
+        .video-meta { font-size: 14px; color: #666; margin-bottom: 15px; }
+        .video-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn-watch { background: #e74c3c; color: #fff; padding: 8px 16px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; text-decoration: none; display: inline-block; }
+        .btn-watch:hover { background: #c0392b; }
+        @media (max-width: 768px) {
+            .videos-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎥 Educational Videos</h1>
+        <p class="subtitle">Watch and save videos for offline learning</p>
+        
+        <div class="header-actions">
+            <a href="offline-library.html" class="btn">📖 My Offline Library</a>
+            <a href="index.html" class="btn">← Back to Home</a>
+        </div>
+
+        <div class="videos-grid" id="videosGrid"></div>
+    </div>
+
+    <script src="offline-storage.js"></script>
+    <script>
+        // Sample educational videos data
+        const videos = [
+            {
+                id: 'video_math_algebra',
+                title: 'Introduction to Algebra',
+                subject: 'Mathematics',
+                class: 'Class 6',
+                duration: '15:30',
+                type: 'video',
+                url: 'https://www.youtube.com/watch?v=NybHckSEQBI'
+            },
+            {
+                id: 'video_science_photosynthesis',
+                title: 'Photosynthesis Explained',
+                subject: 'Science',
+                class: 'Class 7',
+                duration: '12:45',
+                type: 'video',
+                url: 'https://www.youtube.com/watch?v=UPBMG5EYydo'
+            },
+            {
+                id: 'video_english_grammar',
+                title: 'English Grammar Basics',
+                subject: 'English',
+                class: 'Class 6',
+                duration: '18:20',
+                type: 'video',
+                url: 'https://www.youtube.com/watch?v=Rp3LqMYBhkQ'
+            },
+            {
+                id: 'video_math_geometry',
+                title: 'Geometry Fundamentals',
+                subject: 'Mathematics',
+                class: 'Class 7',
+                duration: '20:15',
+                type: 'video',
+                url: 'https://www.youtube.com/watch?v=7yXm2pXEYvs'
+            },
+            {
+                id: 'video_science_electricity',
+                title: 'Understanding Electricity',
+                subject: 'Science',
+                class: 'Class 8',
+                duration: '16:40',
+                type: 'video',
+                url: 'https://www.youtube.com/watch?v=mc979OhitAg'
+            },
+            {
+                id: 'video_python_intro',
+                title: 'Python Programming Basics',
+                subject: 'Computer Science',
+                class: 'Class 11',
+                duration: '25:30',
+                type: 'video',
+                url: 'https://www.youtube.com/watch?v=rfscVS0vtbw'
+            },
+            {
+                id: 'video_history_india',
+                title: 'History of Ancient India',
+                subject: 'Social Studies',
+                class: 'Class 6',
+                duration: '22:10',
+                type: 'video',
+                url: 'https://www.youtube.com/watch?v=jvnU0v6hcUo'
+            },
+            {
+                id: 'video_chemistry_atoms',
+                title: 'Atoms and Molecules',
+                subject: 'Science',
+                class: 'Class 9',
+                duration: '19:25',
+                type: 'video',
+                url: 'https://www.youtube.com/watch?v=Rd4a1X3B61w'
+            }
+        ];
+
+        function renderVideos() {
+            const grid = document.getElementById('videosGrid');
+            
+            grid.innerHTML = videos.map(video => {
+                const isSaved = OfflineStorage.isSaved(video.id);
+                
+                return `
+                    <div class="video-card">
+                        <div class="video-thumbnail">🎥</div>
+                        <div class="video-content">
+                            <div class="video-title">${video.title}</div>
+                            <div class="video-meta">
+                                ${video.subject} • ${video.class} • ${video.duration}
+                            </div>
+                            <div class="video-actions">
+                                <a href="${video.url}" class="btn-watch" target="_blank">▶ Watch</a>
+                                <button class="btn-save-offline" 
+                                        onclick="saveVideo('${video.id}')" 
+                                        ${isSaved ? 'disabled' : ''}>
+                                    ${isSaved ? '✓ Saved' : '💾 Save Offline'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function saveVideo(videoId) {
+            const video = videos.find(v => v.id === videoId);
+            if (!video) return;
+
+            const result = OfflineStorage.save(video);
+            
+            if (result.success) {
+                showNotification('Video saved to offline library!', 'success');
+                renderVideos(); // Re-render to update button state
+            } else {
+                showNotification(result.message, 'error');
+            }
+        }
+
+        // Initial render
+        renderVideos();
+    </script>
+</body>
+</html>
