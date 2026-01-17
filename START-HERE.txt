@@ -30,7 +30,7 @@ WHAT'S BEEN FIXED:
 YOUR API KEY:
 -------------
 Location: .env file
-Key: AIzaSyD4H3JGR4Kkl20P6ONQNpMxXszgS173hSQ
+Key: 
 
 IF CHATBOT STILL SHOWS FALLBACK MESSAGE:
 -----------------------------------------
